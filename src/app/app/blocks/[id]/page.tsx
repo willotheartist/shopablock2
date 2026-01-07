@@ -1,7 +1,16 @@
+//src/app/app/blocks/[id]/page.tsx
 import Link from "next/link";
 import { getBlockById } from "@/lib/blocks";
 import { updateBlock } from "@/lib/actions";
-import { Button, Container, Field, Input, Kicker, Panel, Textarea } from "@/components/ui";
+import {
+  Button,
+  Container,
+  Field,
+  Input,
+  Kicker,
+  Panel,
+  Textarea,
+} from "@/components/ui";
 
 export default async function EditBlockPage({
   params,
@@ -13,15 +22,14 @@ export default async function EditBlockPage({
   if (!block) {
     return (
       <Container narrow>
-        <div className="py-10">
-          <Panel>
-            <div className="p-6">
-              <Kicker>Not found</Kicker>
-              <h1 className="mt-3 text-2xl font-semibold tracking-tight">
-                Block not found.
-              </h1>
-            </div>
-          </Panel>
+        <div className="py-20 text-center">
+          <h1 className="text-2xl font-semibold">Not found</h1>
+          <p className="mt-2 text-sm text-(--muted)">This block doesn’t exist.</p>
+          <div className="mt-6">
+            <Link href="/app">
+              <Button>Back</Button>
+            </Link>
+          </div>
         </div>
       </Container>
     );
@@ -36,57 +44,59 @@ export default async function EditBlockPage({
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
               Edit block
             </h1>
-            <div className="mt-2 font-mono text-xs uppercase tracking-[0.22em] text-(--muted)">
-              @{block.handle}
-            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <a
-              href={`/${block.handle}`}
-              className="font-mono text-xs uppercase tracking-[0.22em] text-(--accent) hover:underline"
-            >
-              View ↗
-            </a>
-            <Link href="/app">
-              <Button>Back</Button>
-            </Link>
-          </div>
+          <Link href="/app">
+            <Button>Back</Button>
+          </Link>
         </div>
 
         <Panel>
           <div className="p-5">
-            <form action={updateBlock.bind(null, block.id)} className="grid gap-5">
+            <form action={updateBlock} className="grid gap-5">
+              {/* REQUIRED: updateBlock expects id */}
+              <input type="hidden" name="id" value={block.id} />
+
               <Field label="Handle">
-                <Input name="handle" defaultValue={block.handle} />
+                <Input name="handle" defaultValue={block.handle ?? ""} placeholder="kus-studio" />
               </Field>
 
               <Field label="Title">
-                <Input name="title" defaultValue={block.title} required />
+                <Input
+                  name="title"
+                  defaultValue={block.title}
+                  placeholder="Studio Print — Edition of 50"
+                  required
+                />
               </Field>
 
               <Field label="Description">
-                <Textarea name="description" defaultValue={block.description} />
+                <Textarea
+                  name="description"
+                  defaultValue={block.description ?? ""}
+                  placeholder="What is it? Why does it matter?"
+                />
               </Field>
 
               <Field label="Price">
-                <Input name="price" defaultValue={block.price} required />
-              </Field>
-
-              <Field label="Delivery type">
-                <select
-                  name="deliveryType"
-                  defaultValue={block.deliveryType}
-                  className="h-12 w-full border border-(--line) bg-transparent px-3 font-mono text-sm outline-none focus:border-(--accent)"
-                >
-                  <option value="physical">physical</option>
-                  <option value="digital">digital</option>
-                </select>
+                <Input
+                  name="price"
+                  type="number"
+                  inputMode="decimal"
+                  step="0.01"
+                  // stored as pennies → show pounds
+                  defaultValue={(Number(block.price) / 100).toFixed(2)}
+                  required
+                />
               </Field>
 
               <Button variant="primary" full type="submit">
                 Save changes
               </Button>
+
+              <p className="text-sm text-(--muted)">
+                Changes are saved immediately.
+              </p>
             </form>
           </div>
         </Panel>
