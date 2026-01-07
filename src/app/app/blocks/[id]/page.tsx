@@ -12,6 +12,8 @@ import {
   Textarea,
 } from "@/components/ui";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditBlockPage({
   params,
 }: {
@@ -54,11 +56,14 @@ export default async function EditBlockPage({
         <Panel>
           <div className="p-5">
             <form action={updateBlock} className="grid gap-5">
-              {/* REQUIRED: updateBlock expects id */}
               <input type="hidden" name="id" value={block.id} />
 
               <Field label="Handle">
-                <Input name="handle" defaultValue={block.handle ?? ""} placeholder="kus-studio" />
+                <Input
+                  name="handle"
+                  defaultValue={block.handle ?? ""}
+                  placeholder="kus-studio"
+                />
               </Field>
 
               <Field label="Title">
@@ -84,7 +89,6 @@ export default async function EditBlockPage({
                   type="number"
                   inputMode="decimal"
                   step="0.01"
-                  // stored as pennies → show pounds
                   defaultValue={(Number(block.price) / 100).toFixed(2)}
                   required
                 />

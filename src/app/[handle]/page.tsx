@@ -4,6 +4,8 @@ import { createOrder } from "@/lib/orders";
 import { Button, Container, Panel } from "@/components/ui";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function PublicBlockPage({
   params,
 }: {
@@ -24,7 +26,6 @@ export default async function PublicBlockPage({
     );
   }
 
-  // Capture primitives after the guard so the server action closure stays typed nicely.
   const blockId = block.id;
   const sellerId = block.ownerId;
 
@@ -40,15 +41,12 @@ export default async function PublicBlockPage({
       email,
     });
 
-    // ✅ Server Actions used as <form action={...}> should return void.
-    // Redirecting is the standard pattern.
     redirect(`/checkout/${order.id}`);
   }
 
   return (
     <Container narrow>
       <div className="py-16 grid gap-10">
-        {/* Header */}
         <div className="grid gap-3">
           <h1 className="text-3xl font-semibold tracking-tight">{block.title}</h1>
           <p className="text-(--muted) text-base leading-relaxed">
@@ -56,7 +54,6 @@ export default async function PublicBlockPage({
           </p>
         </div>
 
-        {/* Offer */}
         <Panel>
           <div className="p-6 grid gap-6">
             <div className="flex items-center justify-between">
@@ -89,7 +86,6 @@ export default async function PublicBlockPage({
           </div>
         </Panel>
 
-        {/* Footer trust */}
         <div className="text-xs text-(--muted) leading-relaxed">
           <p>
             Sold by <span className="font-medium">@{block.handle}</span>

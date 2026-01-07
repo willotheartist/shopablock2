@@ -1,6 +1,9 @@
+//src/app/app/page.tsx
 import Link from "next/link";
 import { listBlocksByOwner } from "@/lib/blocks";
 import { Button, Container, Kicker, Panel } from "@/components/ui";
+
+export const dynamic = "force-dynamic";
 
 const OWNER_ID = "demo-user";
 
