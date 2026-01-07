@@ -1,95 +1,116 @@
-//src/lib/actions.ts
 "use server";
 
-import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { createBlock as createBlockModel } from "@/lib/blocks";
-import { DeliveryType } from "@prisma/client";
+import { BlockStatus, DeliveryType } from "@prisma/client";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-function requireString(formData: FormData, key: string) {
-  const v = String(formData.get(key) ?? "").trim();
-  if (!v) throw new Error(`${key} required`);
-  return v;
+function slugify(input: string) {
+  return input
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
 }
 
-function optionalString(formData: FormData, key: string) {
-  const v = String(formData.get(key) ?? "").trim();
-  return v || null;
+function parsePriceToPennies(raw: string): number {
+  const cleaned = raw.replace(/[^0-9.]/g, "").trim();
+  const value = Number.parseFloat(cleaned);
+  if (!Number.isFinite(value) || value <= 0) throw new Error("Invalid price");
+  return Math.round(value * 100);
 }
 
-function parsePriceToPence(raw: string) {
-  // allow "60" or "60.00"
-  const n = Number(raw);
-  const pence = Math.round(n * 100);
-  if (!Number.isFinite(pence) || pence <= 0) throw new Error("Price must be a positive number");
-  return pence;
-}
+async function requireAuthedUser() {
+  const { userId } = await auth();
+  if (!userId) redirect("/sign-in");
 
-/**
- * NOTE (temporary until auth):
- * We pick the first user as the owner. Replace this with session user ASAP.
- */
-async function getOwnerIdForNow() {
-  const owner = await prisma.user.findFirst({
-    select: { id: true },
-    orderBy: { createdAt: "asc" },
+  const u = await currentUser();
+  const email =
+    u?.emailAddresses?.[0]?.emailAddress ??
+    `${userId}@users.clerk.local`;
+
+  await prisma.user.upsert({
+    where: { id: userId },
+    update: { email },
+    create: { id: userId, email },
   });
-  if (!owner) throw new Error("No user exists yet. Create a user first.");
-  return owner.id;
+
+  return { userId, email };
 }
 
 export async function createBlock(formData: FormData): Promise<void> {
-  const title = requireString(formData, "title");
-  const description = String(formData.get("description") ?? "").trim();
-  const handle = requireString(formData, "handle");
-  const pricePence = parsePriceToPence(requireString(formData, "price"));
+  const { userId } = await requireAuthedUser();
 
-  const ownerId = await getOwnerIdForNow();
+  const handleInput = String(formData.get("handle") || "").trim();
+  const title = String(formData.get("title") || "").trim();
+  const description = String(formData.get("description") || "").trim();
+  const priceRaw = String(formData.get("price") || "").trim();
 
-  const block = await createBlockModel({
-    ownerId,
-    handle,
-    title,
-    description,
-    price: pricePence,
-    currency: "GBP",
-    deliveryType: DeliveryType.physical,
+  if (!title) throw new Error("Title required");
+
+  const price = parsePriceToPennies(priceRaw);
+
+  // If handle not provided, generate a stable-ish default.
+  const base = slugify(handleInput || title) || "block";
+  const handle = handleInput ? slugify(handleInput) : `${base}-${userId.slice(-6)}`;
+
+  const block = await prisma.block.create({
+    data: {
+      ownerId: userId,
+      handle,
+      title,
+      description,
+      price,
+      currency: "GBP",
+      deliveryType: DeliveryType.physical,
+      status: BlockStatus.draft,
+    },
   });
 
   redirect(`/app/blocks/${block.id}`);
 }
 
 export async function updateBlock(formData: FormData): Promise<void> {
-  const id = requireString(formData, "id"); // block id
-  const title = requireString(formData, "title");
-  const description = String(formData.get("description") ?? "").trim();
+  const { userId } = await requireAuthedUser();
 
-  // Allow handle to be optional on edit; keep existing if blank.
-  const handleMaybe = optionalString(formData, "handle");
+  const id = String(formData.get("id") || "").trim();
+  if (!id) throw new Error("Missing block id");
 
-  // price required on edit
-  const pricePence = parsePriceToPence(requireString(formData, "price"));
+  const handle = slugify(String(formData.get("handle") || "").trim());
+  const title = String(formData.get("title") || "").trim();
+  const description = String(formData.get("description") || "").trim();
+  const priceRaw = String(formData.get("price") || "").trim();
 
-  const ownerId = await getOwnerIdForNow();
+  if (!title) throw new Error("Title required");
+  if (!handle) throw new Error("Handle required");
 
-  // Ensure the owner owns this block (prevents updating random blocks)
-  const existing = await prisma.block.findFirst({
-    where: { id, ownerId },
-    select: { id: true, handle: true },
-  });
+  const price = parsePriceToPennies(priceRaw);
 
-  if (!existing) {
-    throw new Error("Block not found");
-  }
-
-  await prisma.block.update({
-    where: { id },
+  await prisma.block.updateMany({
+    where: { id, ownerId: userId },
     data: {
+      handle,
       title,
       description,
-      price: pricePence,
-      ...(handleMaybe ? { handle: handleMaybe } : {}),
+      price,
+      updatedAt: new Date(),
     },
+  });
+
+  redirect(`/app/blocks/${id}`);
+}
+
+export async function updateBlockStatus(formData: FormData): Promise<void> {
+  const { userId } = await requireAuthedUser();
+
+  const id = String(formData.get("id") || "").trim();
+  const status = String(formData.get("status") || "").trim() as BlockStatus;
+
+  if (!id) throw new Error("Missing block id");
+
+  await prisma.block.updateMany({
+    where: { id, ownerId: userId },
+    data: { status },
   });
 
   redirect(`/app/blocks/${id}`);

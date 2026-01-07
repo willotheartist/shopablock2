@@ -1,28 +1,44 @@
 import Link from "next/link";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 export default function SiteHeader() {
   return (
-    <header className="w-full border-b border-black">
-      <div className="grid grid-cols-2 md:grid-cols-4 items-center px-6 py-4">
-        <div className="col-span-1">
-          <Link href="/" className="text-base font-medium tracking-wide uppercase">
-            ShopABlock
-          </Link>
-        </div>
+    <header className="border-b border-(--line)">
+      <div className="mx-auto max-w-5xl px-4 h-14 flex items-center justify-between">
+        <Link href="/" className="font-semibold tracking-tight">
+          shopablock
+        </Link>
 
-        <nav className="col-span-1 hidden md:flex justify-center gap-10 text-sm uppercase tracking-wider">
-          <Link href="/explore">Explore</Link>
-          <Link href="/pricing">Pricing</Link>
-          <Link href="/app">Dashboard</Link>
-        </nav>
+        <div className="flex items-center gap-3">
+          <SignedOut>
+            <SignInButton>
+              <button className="text-sm px-3 py-2 rounded-md border border-(--line)">
+                Sign in
+              </button>
+            </SignInButton>
 
-        <div className="col-span-1 md:col-span-2 flex justify-end">
-          <Link
-            href="/app/new"
-            className="text-sm uppercase tracking-wider underline underline-offset-4"
-          >
-            Create Block
-          </Link>
+            <SignUpButton>
+              <button className="text-sm px-3 py-2 rounded-md bg-(--accent) text-white">
+                Sign up
+              </button>
+            </SignUpButton>
+          </SignedOut>
+
+          <SignedIn>
+            <Link
+              href="/app"
+              className="text-sm px-3 py-2 rounded-md border border-(--line)"
+            >
+              Dashboard
+            </Link>
+            <UserButton />
+          </SignedIn>
         </div>
       </div>
     </header>

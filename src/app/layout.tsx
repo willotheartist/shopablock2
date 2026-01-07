@@ -1,10 +1,11 @@
-import "./globals.css";
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
+import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
-  title: "ShopABlock",
-  description: "Sell one thing. Anywhere.",
+  title: "Shopablock",
+  description: "Sell your work, simply.",
 };
 
 export default function RootLayout({
@@ -13,11 +14,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
-        <SiteHeader />
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body>
+          <SiteHeader />
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

@@ -1,12 +1,14 @@
-//src/app/app/orders/page.tsx
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 import { Container, Panel, Kicker } from "@/components/ui";
 import { prisma } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
-
 export default async function OrdersPage() {
+  const { userId } = await auth();
+  if (!userId) return null;
+
   const orders = await prisma.order.findMany({
+    where: { sellerId: userId },
     orderBy: { createdAt: "desc" },
     include: { block: true },
   });

@@ -1,14 +1,14 @@
-//src/app/app/page.tsx
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 import { listBlocksByOwner } from "@/lib/blocks";
 import { Button, Container, Kicker, Panel } from "@/components/ui";
 
-export const dynamic = "force-dynamic";
-
-const OWNER_ID = "demo-user";
-
 export default async function AppDashboard() {
-  const blocks = await listBlocksByOwner(OWNER_ID);
+  const { userId } = await auth();
+  // /app is protected by middleware, but keep this safe:
+  if (!userId) return null;
+
+  const blocks = await listBlocksByOwner(userId);
 
   return (
     <Container narrow>
@@ -47,7 +47,9 @@ export default async function AppDashboard() {
                           @{b.handle}
                         </div>
                       </div>
-                      <div className="text-(--accent) text-xl leading-none">↗</div>
+                      <div className="text-(--accent) text-xl leading-none">
+                        ↗
+                      </div>
                     </div>
                   </a>
                 ))}
