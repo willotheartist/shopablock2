@@ -3,10 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async rewrites() {
     return [
-      {
-        source: "/_clerk/:path*",
-        destination: "https://frontend-api.clerk.services/:path*",
-      },
+      // Clerk proxy endpoints
+      { source: "/_clerk/:path*", destination: "https://proxy.clerk.services/:path*" },
     ];
   },
 };
