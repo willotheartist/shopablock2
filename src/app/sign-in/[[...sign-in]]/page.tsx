@@ -1,14 +1,14 @@
-import { ClerkLoaded, ClerkLoading, SignUp } from "@clerk/nextjs";
+import { ClerkLoaded, ClerkLoading, SignIn } from "@clerk/nextjs";
 
 export default function Page() {
   return (
     <main className="min-h-[calc(100vh-56px)] flex items-center justify-center px-6">
       <ClerkLoading>
-        <div className="text-sm opacity-60">Loading sign up…</div>
+        <div className="text-sm opacity-60">Loading sign in…</div>
       </ClerkLoading>
 
       <ClerkLoaded>
-        <SignUp />
+        <SignIn />
       </ClerkLoaded>
     </main>
   );
