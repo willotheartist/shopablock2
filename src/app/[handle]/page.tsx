@@ -1,6 +1,8 @@
+//src/app/[handle]/page.tsx
 import { getBlockByHandle } from "@/lib/blocks";
 import { createOrder } from "@/lib/orders";
 import { Button, Container, Panel } from "@/components/ui";
+import { redirect } from "next/navigation";
 
 export default async function PublicBlockPage({
   params,
@@ -22,19 +24,25 @@ export default async function PublicBlockPage({
     );
   }
 
-  async function buy(formData: FormData) {
+  // Capture primitives after the guard so the server action closure stays typed nicely.
+  const blockId = block.id;
+  const sellerId = block.ownerId;
+
+  async function buy(formData: FormData): Promise<void> {
     "use server";
 
     const email = String(formData.get("email") || "").trim();
     if (!email) throw new Error("Email required");
 
     const order = await createOrder({
-      blockId: block.id,
-      sellerId: block.ownerId,
+      blockId,
+      sellerId,
       email,
     });
 
-    return order;
+    // ✅ Server Actions used as <form action={...}> should return void.
+    // Redirecting is the standard pattern.
+    redirect(`/checkout/${order.id}`);
   }
 
   return (
@@ -42,9 +50,7 @@ export default async function PublicBlockPage({
       <div className="py-16 grid gap-10">
         {/* Header */}
         <div className="grid gap-3">
-          <h1 className="text-3xl font-semibold tracking-tight">
-            {block.title}
-          </h1>
+          <h1 className="text-3xl font-semibold tracking-tight">{block.title}</h1>
           <p className="text-(--muted) text-base leading-relaxed">
             {block.description}
           </p>
@@ -77,8 +83,7 @@ export default async function PublicBlockPage({
             <div className="text-xs text-(--muted) leading-relaxed">
               <p>Secure checkout · Instant delivery</p>
               <p>
-                By purchasing, you agree to the seller’s refund and support
-                policy.
+                By purchasing, you agree to the seller’s refund and support policy.
               </p>
             </div>
           </div>
