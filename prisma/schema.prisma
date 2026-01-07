@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+
+
+enum DeliveryType {
+  physical
+  digital
+}
+
+enum BlockStatus {
+  draft
+  active
+  sold_out
+}
+
+enum OrderStatus {
+  pending
+  paid
+  fulfilled
+  cancelled
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+
+  blocks Block[]
+  orders Order[]
+}
+
+model Block {
+  id           String       @id @default(cuid())
+  handle       String       @unique
+  title        String
+  description  String
+  price        Int
+  currency     String       @default("GBP")
+
+  status       BlockStatus  @default(draft)
+  quantity     Int?
+  soldCount    Int          @default(0)
+
+  deliveryType DeliveryType @default(physical)
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders Order[]
+
+  @@index([handle])
+  @@index([ownerId])
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  status    OrderStatus @default(pending)
+
+  amount    Int
+  currency  String
+
+  email     String
+
+  blockId   String
+  sellerId  String
+
+  shipName     String?
+  shipLine1    String?
+  shipLine2    String?
+  shipCity     String?
+  shipPostcode String?
+  shipCountry  String?
+
+  fulfilledAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  block  Block @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  seller User  @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+
+  @@index([blockId])
+  @@index([sellerId])
+}
