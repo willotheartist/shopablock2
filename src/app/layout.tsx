@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+// src/app/layout.tsx
 import "./globals.css";
+import type { Metadata } from "next";
 import SiteHeader from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   title: "Shopablock",
-  description: "Sell your work, simply.",
+  description: "Sell simple blocks.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

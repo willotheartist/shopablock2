@@ -1,24 +1,34 @@
-"use client";
-
-import Image from "next/image";
+// src/components/SiteHeader.tsx
 import Link from "next/link";
 
 export default function SiteHeader() {
   return (
-    <header className="w-full border-b border-(--line) bg-[rgba(255,255,255,0.7)] backdrop-blur">
-      <div className="w-full px-6 sm:px-10 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/blocklogo.png" alt="Shopablock" width={140} height={28} priority className="h-6 w-auto" />
+    <header className="border-b border-(--line)">
+      <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between gap-6">
+        <Link href="/" className="font-semibold tracking-tight">
+          Shopablock
         </Link>
 
-        <div className="flex items-center gap-3">
-          <Link href="/sign-in" className="text-sm px-3 py-2 rounded-md border border-(--line) hover:bg-black/5 transition">
+        <nav className="flex items-center gap-4 text-sm">
+          <Link className="hover:underline" href="/pricing">
+            Pricing
+          </Link>
+          <Link className="hover:underline" href="/demo">
+            Demo
+          </Link>
+          <Link className="hover:underline" href="/app">
+            App
+          </Link>
+          <Link className="hover:underline" href="/sign-in">
             Sign in
           </Link>
-          <Link href="/sign-up" className="text-sm px-3 py-2 rounded-md bg-(--accent) text-white hover:opacity-95 transition">
+          <Link
+            className="rounded-xl px-3 py-2 border border-(--line) hover:bg-(--accent)/5"
+            href="/sign-up"
+          >
             Sign up
           </Link>
-        </div>
+        </nav>
       </div>
     </header>
   );

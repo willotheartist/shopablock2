@@ -1,117 +1,142 @@
+// src/lib/actions.ts
 "use server";
 
 import { prisma } from "@/lib/db";
 import { BlockStatus, DeliveryType } from "@prisma/client";
-import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { getSessionUser } from "@/lib/auth";
 
 function slugify(input: string) {
   return input
-    .toLowerCase()
     .trim()
+    .toLowerCase()
+    .replace(/['"]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "");
+    .replace(/(^-|-$)+/g, "")
+    .slice(0, 64);
 }
 
-function parsePriceToPennies(raw: string): number {
-  const cleaned = raw.replace(/[^0-9.]/g, "").trim();
-  const value = Number.parseFloat(cleaned);
-  if (!Number.isFinite(value) || value <= 0) throw new Error("Invalid price");
-  return Math.round(value * 100);
+function moneyToIntGBP(value: string) {
+  const n = Number(String(value).replace(/[^0-9.]/g, ""));
+  if (!Number.isFinite(n)) return 0;
+  return Math.round(n * 100);
 }
 
-async function requireAuthedUser() {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+export async function createBlock(formData: FormData) {
+  const user = await getSessionUser();
+  if (!user) redirect("/sign-in?next=/app/new");
 
-  const u = await currentUser();
-  const email =
-    u?.emailAddresses?.[0]?.emailAddress ??
-    `${userId}@users.clerk.local`;
+  const title = String(formData.get("title") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
+  const handleInput = String(formData.get("handle") ?? "").trim();
+  const priceInput = String(formData.get("price") ?? "").trim();
+  const currency = String(formData.get("currency") ?? "GBP").trim() || "GBP";
+  const deliveryTypeRaw = String(formData.get("deliveryType") ?? "physical").trim();
+  const statusRaw = String(formData.get("status") ?? "draft").trim();
+  const quantityRaw = String(formData.get("quantity") ?? "").trim();
 
-  await prisma.user.upsert({
-    where: { id: userId },
-    update: { email },
-    create: { id: userId, email },
-  });
+  if (!title) redirect("/app/new?error=title");
 
-  return { userId, email };
+  const handle = slugify(handleInput || title);
+  if (!handle) redirect("/app/new?error=handle");
+
+  const price = moneyToIntGBP(priceInput);
+  if (price < 0) redirect("/app/new?error=price");
+
+  const deliveryType =
+    deliveryTypeRaw === "digital" ? DeliveryType.digital : DeliveryType.physical;
+
+  const status =
+    statusRaw === "active"
+      ? BlockStatus.active
+      : statusRaw === "sold_out"
+        ? BlockStatus.sold_out
+        : BlockStatus.draft;
+
+  const quantity =
+    quantityRaw === "" ? null : Math.max(0, Number.parseInt(quantityRaw, 10) || 0);
+
+  try {
+    const block = await prisma.block.create({
+      data: {
+        handle,
+        title,
+        description,
+        price,
+        currency,
+        status,
+        quantity,
+        deliveryType,
+        ownerId: user.id,
+      },
+      select: { id: true },
+    });
+
+    redirect(`/app/blocks/${block.id}`);
+  } catch {
+    redirect(`/app/new?error=handle_taken&handle=${encodeURIComponent(handle)}`);
+  }
 }
 
-export async function createBlock(formData: FormData): Promise<void> {
-  const { userId } = await requireAuthedUser();
+export async function updateBlock(formData: FormData) {
+  const user = await getSessionUser();
+  if (!user) redirect("/sign-in?next=/app");
 
-  const handleInput = String(formData.get("handle") || "").trim();
-  const title = String(formData.get("title") || "").trim();
-  const description = String(formData.get("description") || "").trim();
-  const priceRaw = String(formData.get("price") || "").trim();
+  const blockId = String(formData.get("id") ?? "").trim();
+  if (!blockId) redirect("/app?error=missing_id");
 
-  if (!title) throw new Error("Title required");
+  const title = String(formData.get("title") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
+  const handleInput = String(formData.get("handle") ?? "").trim();
+  const priceInput = String(formData.get("price") ?? "").trim();
+  const currency = String(formData.get("currency") ?? "GBP").trim() || "GBP";
+  const deliveryTypeRaw = String(formData.get("deliveryType") ?? "physical").trim();
+  const statusRaw = String(formData.get("status") ?? "draft").trim();
+  const quantityRaw = String(formData.get("quantity") ?? "").trim();
 
-  const price = parsePriceToPennies(priceRaw);
+  const handle = slugify(handleInput || title);
+  const price = moneyToIntGBP(priceInput);
 
-  // If handle not provided, generate a stable-ish default.
-  const base = slugify(handleInput || title) || "block";
-  const handle = handleInput ? slugify(handleInput) : `${base}-${userId.slice(-6)}`;
+  const deliveryType =
+    deliveryTypeRaw === "digital" ? DeliveryType.digital : DeliveryType.physical;
 
-  const block = await prisma.block.create({
+  const status =
+    statusRaw === "active"
+      ? BlockStatus.active
+      : statusRaw === "sold_out"
+        ? BlockStatus.sold_out
+        : BlockStatus.draft;
+
+  const quantity =
+    quantityRaw === "" ? null : Math.max(0, Number.parseInt(quantityRaw, 10) || 0);
+
+  await prisma.block.updateMany({
+    where: { id: blockId, ownerId: user.id },
     data: {
-      ownerId: userId,
-      handle,
       title,
       description,
+      handle,
       price,
-      currency: "GBP",
-      deliveryType: DeliveryType.physical,
-      status: BlockStatus.draft,
+      currency,
+      status,
+      quantity,
+      deliveryType,
     },
   });
 
-  redirect(`/app/blocks/${block.id}`);
+  redirect(`/app/blocks/${blockId}`);
 }
 
-export async function updateBlock(formData: FormData): Promise<void> {
-  const { userId } = await requireAuthedUser();
+export async function deleteBlock(formData: FormData) {
+  const user = await getSessionUser();
+  if (!user) redirect("/sign-in?next=/app");
 
-  const id = String(formData.get("id") || "").trim();
-  if (!id) throw new Error("Missing block id");
+  const blockId = String(formData.get("id") ?? "").trim();
+  if (!blockId) redirect("/app?error=missing_id");
 
-  const handle = slugify(String(formData.get("handle") || "").trim());
-  const title = String(formData.get("title") || "").trim();
-  const description = String(formData.get("description") || "").trim();
-  const priceRaw = String(formData.get("price") || "").trim();
-
-  if (!title) throw new Error("Title required");
-  if (!handle) throw new Error("Handle required");
-
-  const price = parsePriceToPennies(priceRaw);
-
-  await prisma.block.updateMany({
-    where: { id, ownerId: userId },
-    data: {
-      handle,
-      title,
-      description,
-      price,
-      updatedAt: new Date(),
-    },
+  await prisma.block.deleteMany({
+    where: { id: blockId, ownerId: user.id },
   });
 
-  redirect(`/app/blocks/${id}`);
-}
-
-export async function updateBlockStatus(formData: FormData): Promise<void> {
-  const { userId } = await requireAuthedUser();
-
-  const id = String(formData.get("id") || "").trim();
-  const status = String(formData.get("status") || "").trim() as BlockStatus;
-
-  if (!id) throw new Error("Missing block id");
-
-  await prisma.block.updateMany({
-    where: { id, ownerId: userId },
-    data: { status },
-  });
-
-  redirect(`/app/blocks/${id}`);
+  redirect("/app");
 }
