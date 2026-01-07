@@ -1,6 +1,15 @@
+//src/app/app/new/page.tsx
 import Link from "next/link";
 import { createBlock } from "@/lib/actions";
-import { Button, Container, Field, Input, Kicker, Panel, Textarea } from "@/components/ui";
+import {
+  Button,
+  Container,
+  Field,
+  Input,
+  Kicker,
+  Panel,
+  Textarea,
+} from "@/components/ui";
 
 export default function NewBlockPage() {
   return (
@@ -22,20 +31,34 @@ export default function NewBlockPage() {
         <Panel>
           <div className="p-5">
             <form action={createBlock} className="grid gap-5">
-              <Field label="Handle (optional)">
-                <Input name="handle" placeholder="kus-studio" />
+              <Field label="Handle">
+                <Input name="handle" placeholder="kus-studio" required />
               </Field>
 
               <Field label="Title">
-                <Input name="title" placeholder="Studio Print — Edition of 50" required />
+                <Input
+                  name="title"
+                  placeholder="Studio Print — Edition of 50"
+                  required
+                />
               </Field>
 
               <Field label="Description">
-                <Textarea name="description" placeholder="What is it? Why does it matter?" />
+                <Textarea
+                  name="description"
+                  placeholder="What is it? Why does it matter?"
+                />
               </Field>
 
               <Field label="Price">
-                <Input name="price" placeholder="£60.00" required />
+                <Input
+                  name="price"
+                  type="number"
+                  inputMode="decimal"
+                  step="0.01"
+                  placeholder="60.00"
+                  required
+                />
               </Field>
 
               <Button variant="primary" full type="submit">

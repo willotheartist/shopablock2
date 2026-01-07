@@ -1,123 +1,51 @@
+//src/lib/actions.ts
 "use server";
 
-import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
+import { prisma } from "@/lib/db";
+import { createBlock as createBlockModel } from "@/lib/blocks";
+import { DeliveryType } from "@prisma/client";
 
-function slugifyHandle(input: string) {
-  return input
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 32);
+function requireString(formData: FormData, key: string) {
+  const v = String(formData.get(key) ?? "").trim();
+  if (!v) throw new Error(`${key} required`);
+  return v;
 }
 
-/**
- * BLOCKS
- */
-export async function createBlock(formData: FormData) {
-  const title = String(formData.get("title") ?? "").trim();
+export async function createBlock(formData: FormData): Promise<void> {
+  const title = requireString(formData, "title");
   const description = String(formData.get("description") ?? "").trim();
-  const price = String(formData.get("price") ?? "").trim();
-  const handleInput = String(formData.get("handle") ?? "").trim();
 
-  if (!title) throw new Error("Title is required.");
-  if (!price) throw new Error("Price is required.");
+  // Handle MUST exist (because User has no handle field)
+  const handle = requireString(formData, "handle");
 
-  const handle = slugifyHandle(handleInput || title);
+  // Accept "60" or "60.00" and store pennies/cents (integer)
+  const rawPrice = requireString(formData, "price");
+  const pricePence = Math.round(Number(rawPrice) * 100);
 
-  const block = await prisma.block.create({
-    data: {
-      handle,
-      title,
-      description,
-      price,
-      deliveryType: "physical",
-    },
+  if (!Number.isFinite(pricePence) || pricePence <= 0) {
+    throw new Error("Price must be a positive number");
+  }
+
+  // Until auth exists, pick the first user as owner (by id only)
+  const owner = await prisma.user.findFirst({
+    select: { id: true },
+    orderBy: { createdAt: "asc" },
+  });
+
+  if (!owner) {
+    throw new Error("No user exists yet. Create a user first.");
+  }
+
+  const block = await createBlockModel({
+    ownerId: owner.id,
+    handle,
+    title,
+    description,
+    price: pricePence,
+    currency: "GBP",
+    deliveryType: DeliveryType.physical,
   });
 
   redirect(`/app/blocks/${block.id}`);
-}
-
-export async function updateBlock(id: string, formData: FormData) {
-  const title = String(formData.get("title") ?? "").trim();
-  const description = String(formData.get("description") ?? "").trim();
-  const price = String(formData.get("price") ?? "").trim();
-  const handleInput = String(formData.get("handle") ?? "").trim();
-  const deliveryType = String(formData.get("deliveryType") ?? "physical");
-
-  if (!title) throw new Error("Title is required.");
-  if (!price) throw new Error("Price is required.");
-  if (deliveryType !== "physical" && deliveryType !== "digital") {
-    throw new Error("Invalid delivery type.");
-  }
-
-  const handle = slugifyHandle(handleInput || title);
-
-  await prisma.block.update({
-    where: { id },
-    data: {
-      handle,
-      title,
-      description,
-      price,
-      deliveryType,
-    },
-  });
-
-  redirect(`/app/blocks/${id}`);
-}
-
-/**
- * CHECKOUT (stub)
- */
-export async function startCheckout(blockId: string, formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim();
-  const amount = String(formData.get("amount") ?? "").trim();
-
-  if (!email) throw new Error("Email is required.");
-  if (!amount) throw new Error("Amount is required.");
-
-  const block = await prisma.block.findUnique({ where: { id: blockId } });
-  if (!block) throw new Error("Block not found.");
-
-  const shipName = String(formData.get("shipName") ?? "").trim();
-  const shipLine1 = String(formData.get("shipLine1") ?? "").trim();
-  const shipLine2 = String(formData.get("shipLine2") ?? "").trim();
-  const shipCity = String(formData.get("shipCity") ?? "").trim();
-  const shipPostcode = String(formData.get("shipPostcode") ?? "").trim();
-  const shipCountry = String(formData.get("shipCountry") ?? "").trim();
-
-  // If physical delivery, require minimal address fields
-  if (block.deliveryType === "physical") {
-    if (!shipName || !shipLine1 || !shipCity || !shipPostcode || !shipCountry) {
-      throw new Error("Shipping address is required for physical delivery.");
-    }
-  }
-
-  const order = await prisma.order.create({
-    data: {
-      blockId,
-      email,
-      amount,
-      status: "pending",
-      shipName: shipName || null,
-      shipLine1: shipLine1 || null,
-      shipLine2: shipLine2 || null,
-      shipCity: shipCity || null,
-      shipPostcode: shipPostcode || null,
-      shipCountry: shipCountry || null,
-    },
-  });
-
-  redirect(`/checkout/${order.id}`);
-}
-
-export async function completeCheckout(orderId: string) {
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { status: "paid" },
-  });
-
-  redirect(`/receipt/${orderId}`);
 }
