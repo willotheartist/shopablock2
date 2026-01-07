@@ -1,3 +1,5 @@
+"use client";
+
 import { ClerkLoaded, ClerkLoading, SignUp } from "@clerk/nextjs";
 
 export default function Page() {
@@ -8,7 +10,7 @@ export default function Page() {
       </ClerkLoading>
 
       <ClerkLoaded>
-        <SignUp />
+        <SignUp routing="path" path="/sign-up" signInUrl="/sign-in" />
       </ClerkLoaded>
     </main>
   );
