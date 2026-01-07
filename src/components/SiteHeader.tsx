@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   SignedIn,
@@ -17,14 +19,20 @@ export default function SiteHeader() {
 
         <div className="flex items-center gap-3">
           <SignedOut>
-            <SignInButton>
-              <button className="text-sm px-3 py-2 rounded-md border border-(--line)">
+            <SignInButton mode="redirect" forceRedirectUrl="/app">
+              <button
+                type="button"
+                className="text-sm px-3 py-2 rounded-md border border-(--line)"
+              >
                 Sign in
               </button>
             </SignInButton>
 
-            <SignUpButton>
-              <button className="text-sm px-3 py-2 rounded-md bg-(--accent) text-white">
+            <SignUpButton mode="redirect" forceRedirectUrl="/app">
+              <button
+                type="button"
+                className="text-sm px-3 py-2 rounded-md bg-(--accent) text-white"
+              >
                 Sign up
               </button>
             </SignUpButton>
