@@ -1,12 +1,12 @@
 # 📁 shopablock2 - Project Structure
 
-*Generated on: 06/01/2026, 23:43:27*
+*Generated on: 07/01/2026, 13:30:34*
 
 ## 📋 Quick Overview
 
 | Metric | Value |
 |--------|-------|
-| 📄 Total Files | 45 |
+| 📄 Total Files | 46 |
 | 📁 Total Folders | 23 |
 | 🌳 Max Depth | 5 levels |
 | 🛠️ Tech Stack | React, Next.js, TypeScript, CSS, Node.js |
@@ -24,38 +24,39 @@
 
 ### By File Type
 
-- ⚛️ **.tsx** (React TypeScript files): 15 files (33.3%)
-- 🔷 **.ts** (TypeScript files): 7 files (15.6%)
-- 🎨 **.svg** (SVG images): 5 files (11.1%)
-- 📖 **.md** (Markdown files): 2 files (4.4%)
-- 📄 **.db** (Other files): 2 files (4.4%)
-- 📄 **.mjs** (Other files): 2 files (4.4%)
-- ⚙️ **.json** (JSON files): 2 files (4.4%)
-- ⚙️ **.yaml** (YAML files): 2 files (4.4%)
-- 🎨 **.css** (Stylesheets): 2 files (4.4%)
+- ⚛️ **.tsx** (React TypeScript files): 15 files (32.6%)
+- 🔷 **.ts** (TypeScript files): 7 files (15.2%)
+- 🎨 **.svg** (SVG images): 5 files (10.9%)
+- 📖 **.md** (Markdown files): 2 files (4.3%)
+- 📄 **.db** (Other files): 2 files (4.3%)
+- 📄 **.mjs** (Other files): 2 files (4.3%)
+- ⚙️ **.json** (JSON files): 2 files (4.3%)
+- ⚙️ **.yaml** (YAML files): 2 files (4.3%)
+- 🎨 **.css** (Stylesheets): 2 files (4.3%)
 - 🚫 **.gitignore** (Git ignore): 1 files (2.2%)
 - 📄 **.db-journal** (Other files): 1 files (2.2%)
 - 📄 **.sql** (Other files): 1 files (2.2%)
 - ⚙️ **.toml** (TOML files): 1 files (2.2%)
 - 📄 **.prisma** (Other files): 1 files (2.2%)
 - 🖼️ **.ico** (Icon files): 1 files (2.2%)
+- 📄 **.** (Other files): 1 files (2.2%)
 
 ### By Category
 
-- **React**: 15 files (33.3%)
-- **Other**: 7 files (15.6%)
-- **TypeScript**: 7 files (15.6%)
-- **Assets**: 6 files (13.3%)
-- **Config**: 5 files (11.1%)
-- **Docs**: 2 files (4.4%)
-- **Styles**: 2 files (4.4%)
+- **React**: 15 files (32.6%)
+- **Other**: 8 files (17.4%)
+- **TypeScript**: 7 files (15.2%)
+- **Assets**: 6 files (13.0%)
+- **Config**: 5 files (10.9%)
+- **Docs**: 2 files (4.3%)
+- **Styles**: 2 files (4.3%)
 - **DevOps**: 1 files (2.2%)
 
 ### 📁 Largest Directories
 
-- **root**: 45 files
-- **src**: 22 files
-- **src/app**: 15 files
+- **root**: 46 files
+- **src**: 23 files
+- **src/app**: 16 files
 - **src/app/app**: 6 files
 - **prisma**: 5 files
 
@@ -116,6 +117,7 @@ shopablock2/
 │   │   ├── ⚛️ page.tsx
 │   │   ├── 📂 pricing/
 │   │   │   └── ⚛️ page.tsx
+│   │   ├── 📄 r
 │   │   └── 📂 receipt/
 │   │   │   └── 📂 [orderId]/
 │   │   │   │   └── ⚛️ page.tsx
