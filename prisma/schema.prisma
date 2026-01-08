@@ -43,11 +43,26 @@ model Block {
   ownerId      String
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-  owner        User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  orders       Order[]
+
+  owner  User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  orders Order[]
+  media  BlockMedia[]
 
   @@index([handle])
   @@index([ownerId])
+}
+
+model BlockMedia {
+  id        String   @id @default(cuid())
+  blockId   String
+  url       String
+  sort      Int      @default(0)
+  createdAt DateTime @default(now())
+
+  block Block @relation(fields: [blockId], references: [id], onDelete: Cascade)
+
+  @@index([blockId])
+  @@index([sort])
 }
 
 model Order {

@@ -1,6 +1,6 @@
 // src/app/api/auth/sign-in/route.ts
 import { NextResponse } from "next/server";
-import { setSession, verifyUser } from "@/lib/auth";
+import { createSession, sessionCookieOptions, verifyUser, SESSION_COOKIE } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
@@ -15,6 +15,13 @@ export async function POST(req: Request) {
     return NextResponse.redirect(new URL("/sign-in?error=invalid", req.url));
   }
 
-  await setSession(user.id);
-  return NextResponse.redirect(new URL(next.startsWith("/") ? next : "/app", req.url));
+  const { token, expiresAt } = await createSession(user.id);
+
+  const dest = next.startsWith("/") ? next : "/app";
+  const res = NextResponse.redirect(new URL(dest, req.url));
+
+  // ✅ In Route Handlers, set cookie on the RESPONSE
+  res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions(expiresAt));
+
+  return res;
 }

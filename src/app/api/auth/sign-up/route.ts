@@ -1,6 +1,6 @@
 // src/app/api/auth/sign-up/route.ts
 import { NextResponse } from "next/server";
-import { createUser, setSession } from "@/lib/auth";
+import { createUser, createSession, sessionCookieOptions, SESSION_COOKIE } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
@@ -19,8 +19,11 @@ export async function POST(req: Request) {
 
   try {
     const user = await createUser(email, password);
-    await setSession(user.id);
-    return NextResponse.redirect(new URL("/app", req.url));
+    const { token, expiresAt } = await createSession(user.id);
+
+    const res = NextResponse.redirect(new URL("/app", req.url));
+    res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions(expiresAt));
+    return res;
   } catch {
     return NextResponse.redirect(new URL("/sign-up?error=exists", req.url));
   }

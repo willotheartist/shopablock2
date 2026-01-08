@@ -1,28 +1,33 @@
 //src/app/[handle]/page.tsx
 import { getBlockByHandle } from "@/lib/blocks";
 import { createOrder } from "@/lib/orders";
-import { Button, Container, Panel } from "@/components/ui";
 import { redirect } from "next/navigation";
+import ProductClient from "./ProductClient";
 
 export const dynamic = "force-dynamic";
+
+type Params = { handle?: string };
 
 export default async function PublicBlockPage({
   params,
 }: {
-  params: { handle: string };
+  params: Params | Promise<Params>;
 }) {
-  const block = await getBlockByHandle(params.handle);
+  const resolvedParams = await Promise.resolve(params);
+  const handle = resolvedParams?.handle?.trim();
+
+  const block = await getBlockByHandle(handle);
 
   if (!block || block.status !== "active") {
     return (
-      <Container narrow>
-        <div className="py-20 text-center">
+      <main className="bg-[rgb(246,245,241)] text-black min-h-[70vh] grid place-items-center px-6">
+        <div className="text-center">
           <h1 className="text-2xl font-semibold">Not found</h1>
-          <p className="mt-2 text-sm text-(--muted)">
+          <p className="mt-2 text-sm text-black/60">
             This block doesn’t exist or is no longer available.
           </p>
         </div>
-      </Container>
+      </main>
     );
   }
 
@@ -45,54 +50,17 @@ export default async function PublicBlockPage({
   }
 
   return (
-    <Container narrow>
-      <div className="py-16 grid gap-10">
-        <div className="grid gap-3">
-          <h1 className="text-3xl font-semibold tracking-tight">{block.title}</h1>
-          <p className="text-(--muted) text-base leading-relaxed">
-            {block.description}
-          </p>
-        </div>
-
-        <Panel>
-          <div className="p-6 grid gap-6">
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-(--muted)">Price</div>
-              <div className="text-2xl font-semibold">
-                £{(Number(block.price) / 100).toFixed(2)}
-              </div>
-            </div>
-
-            <form action={buy} className="grid gap-3">
-              <input
-                type="email"
-                name="email"
-                required
-                placeholder="you@example.com"
-                className="w-full rounded-md border border-(--line) px-3 py-2 text-sm"
-              />
-
-              <Button type="submit" variant="primary" full>
-                Buy now
-              </Button>
-            </form>
-
-            <div className="text-xs text-(--muted) leading-relaxed">
-              <p>Secure checkout · Instant delivery</p>
-              <p>
-                By purchasing, you agree to the seller’s refund and support policy.
-              </p>
-            </div>
-          </div>
-        </Panel>
-
-        <div className="text-xs text-(--muted) leading-relaxed">
-          <p>
-            Sold by <span className="font-medium">@{block.handle}</span>
-          </p>
-          <p>Questions? Contact the seller directly.</p>
-        </div>
-      </div>
-    </Container>
+    <ProductClient
+      buyAction={buy}
+      block={{
+        id: block.id,
+        title: block.title,
+        description: block.description ?? null,
+        price: Number(block.price),
+        currency: block.currency,
+        handle: block.handle,
+        media: (block.media ?? []).map((m) => ({ id: m.id, url: m.url })),
+      }}
+    />
   );
 }

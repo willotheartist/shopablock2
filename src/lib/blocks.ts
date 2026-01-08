@@ -5,6 +5,12 @@ export async function listPublicBlocks() {
   return prisma.block.findMany({
     where: { status: BlockStatus.active },
     orderBy: { createdAt: "desc" },
+    include: {
+      media: {
+        orderBy: { sort: "asc" },
+        take: 1,
+      },
+    },
   });
 }
 
@@ -12,15 +18,32 @@ export async function listBlocksByOwner(ownerId: string) {
   return prisma.block.findMany({
     where: { ownerId },
     orderBy: { createdAt: "desc" },
+    include: {
+      media: {
+        orderBy: { sort: "asc" },
+      },
+    },
   });
 }
 
 export async function getBlockById(id: string) {
-  return prisma.block.findUnique({ where: { id } });
+  const v = typeof id === "string" ? id.trim() : "";
+  if (!v) return null;
+
+  return prisma.block.findUnique({
+    where: { id: v },
+    include: { media: { orderBy: { sort: "asc" } } },
+  });
 }
 
-export async function getBlockByHandle(handle: string) {
-  return prisma.block.findUnique({ where: { handle } });
+export async function getBlockByHandle(handle?: string) {
+  const h = typeof handle === "string" ? handle.trim() : "";
+  if (!h) return null;
+
+  return prisma.block.findUnique({
+    where: { handle: h },
+    include: { media: { orderBy: { sort: "asc" } } },
+  });
 }
 
 export async function createBlock(input: {
