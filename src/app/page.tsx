@@ -1,3 +1,4 @@
+// src/app/page.tsx
 "use client";
 
 import Link from "next/link";
@@ -83,6 +84,28 @@ function UnderlineLink({
   );
 }
 
+function CTAButton({
+  href,
+  children,
+  variant = "primary",
+}: {
+  href: string;
+  children: React.ReactNode;
+  variant?: "primary" | "ghost";
+}) {
+  const base =
+    "h-12 px-8 text-sm uppercase tracking-[0.18em] inline-flex items-center justify-center border border-black transition";
+  const styles =
+    variant === "primary"
+      ? "bg-black text-[rgb(246,245,241)] hover:opacity-90"
+      : "bg-transparent text-black hover:bg-black hover:text-[rgb(246,245,241)]";
+  return (
+    <Link href={href} className={`${base} ${styles}`}>
+      {children}
+    </Link>
+  );
+}
+
 export default function HomePage() {
   const v = useReveal();
 
@@ -97,33 +120,55 @@ export default function HomePage() {
   return (
     <main className="bg-[rgb(246,245,241)] text-black">
       {/* HERO */}
-      <section className="px-6 pt-28 pb-22 md:pt-32 md:pb-28 border-b border-black">
-        <div ref={heroRef} className="max-w-300">
+      <section className="min-h-[95vh] px-6 pt-28 pb-22 md:pt-32 md:pb-28 border-b border-black flex items-center">
+        <div ref={heroRef} className="max-w-300 mx-auto">
           <motion.div style={{ y: heroY, opacity: heroFade }}>
-            <h1 className="text-[clamp(3.1rem,8.4vw,6.4rem)] leading-[0.92] tracking-tight font-normal">
-              Sell one thing.
-              <br />
-              Perfectly.
-            </h1>
+            <motion.div variants={v.wrap} initial="hidden" animate="show">
+              <motion.h1
+                variants={v.item}
+                className="text-center text-[clamp(3.1rem,8.4vw,6.4rem)] leading-[0.92] tracking-tight font-normal"
+              >
+                Buy one block.
+                <br />
+                Sell one thing.
+              </motion.h1>
 
-            <p className="mt-10 max-w-176 text-[15px] leading-relaxed text-black/80">
-              ShopABlock is a single product page with checkout and delivery.
-              Built for focus. Built to be shared. Built to convert without
-              looking like a funnel.
-            </p>
+              <motion.p
+                variants={v.item}
+                className="mt-10 mx-auto max-w-176 text-center text-[15px] leading-relaxed text-black/80"
+              >
+                The smallest possible shop on the internet.
+                <br />
+                A single product page with checkout and delivery.
+              </motion.p>
 
-            <div className="mt-12 flex flex-wrap gap-x-10 gap-y-4 text-sm uppercase tracking-[0.18em]">
-              <UnderlineLink href="/app/new">Create a block</UnderlineLink>
-              <UnderlineLink href="/explore">See examples</UnderlineLink>
-              <UnderlineLink href="/app">Open dashboard</UnderlineLink>
-            </div>
+              <motion.div
+                variants={v.item}
+                className="mt-10 flex justify-center gap-3"
+              >
+                <CTAButton href="/app/new" variant="primary">
+                  Start selling
+                </CTAButton>
+                <CTAButton href="/demo" variant="ghost">
+                  See a demo block
+                </CTAButton>
+              </motion.div>
+
+              <motion.div
+                variants={v.item}
+                className="mt-10 text-center text-[11px] uppercase tracking-[0.18em] text-black/60"
+              >
+                No store setup • No themes • No bloat
+              </motion.div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* MANIFESTO / NOT BORING */}
+      {/* MANIFESTO / POSITION */}
       <Section className="px-6 py-24 md:py-28 border-b border-black">
-        <div className="max-w-350 grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
+        {/* FIX: add `grid` so cols work */}
+        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
           <motion.div variants={v.item} className="md:col-span-4">
             <K>Position</K>
             <h2 className="mt-5 text-3xl leading-tight tracking-tight font-normal">
@@ -182,10 +227,13 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* “ANATOMY” — the missing visual */}
+      {/* “ANATOMY” */}
       <Section className="px-6 py-24 md:py-28 border-b border-black">
-        <div className="max-w-350 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14 items-start">
-          <motion.div variants={v.item} className="md:col-span-4 md:sticky md:top-24">
+        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14 items-start">
+          <motion.div
+            variants={v.item}
+            className="md:col-span-4 md:sticky md:top-24"
+          >
             <K>Block anatomy</K>
             <h3 className="mt-5 text-2xl tracking-tight font-normal">
               Everything a buyer needs.
@@ -201,7 +249,6 @@ export default function HomePage() {
           <motion.div variants={v.item} className="md:col-span-8">
             <div className="border border-black">
               <div className="grid grid-cols-1 md:grid-cols-2">
-                {/* left: fake product */}
                 <div className="p-7 md:p-9 border-b md:border-b-0 md:border-r border-black">
                   <div className="flex items-baseline justify-between gap-6">
                     <div className="min-w-0">
@@ -223,7 +270,7 @@ export default function HomePage() {
                   <div className="mt-7 grid grid-cols-3 gap-2">
                     <div className="aspect-4/3 border border-black" />
                     <div className="aspect-4/3 border border-black" />
-                    <div className="aspect-4/3order border-black" />
+                    <div className="aspect-4/3 border border-black" />
                   </div>
 
                   <p className="mt-7 text-sm leading-relaxed text-black/80 max-w-md">
@@ -236,7 +283,6 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* right: fake checkout */}
                 <div className="p-7 md:p-9">
                   <div className="text-xs uppercase tracking-[0.18em] text-black/60">
                     Checkout
@@ -272,8 +318,8 @@ export default function HomePage() {
                         </span>
                       </div>
                       <div className="mt-3 text-[11px] leading-relaxed text-black/60">
-                        Payment integration can change later — the selling
-                        surface stays the same.
+                        The surface stays the same even if the payment rail
+                        evolves.
                       </div>
                     </div>
                   </div>
@@ -293,10 +339,13 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* PRINCIPLES — not floating in empty space */}
+      {/* PRINCIPLES */}
       <Section className="px-6 py-24 md:py-28 border-b border-black">
-        <div className="max-w-350">
-          <motion.div variants={v.item} className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
+        <div className="max-w-350 mx-auto">
+          <motion.div
+            variants={v.item}
+            className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14"
+          >
             <div className="md:col-span-4">
               <K>Principles</K>
               <h3 className="mt-5 text-2xl tracking-tight font-normal">
@@ -304,7 +353,7 @@ export default function HomePage() {
               </h3>
               <p className="mt-6 text-sm leading-relaxed text-black/75 max-w-sm">
                 The point is restraint: fewer features, fewer decisions, fewer
-                ways to break your own selling flow.
+                ways to break your selling flow.
               </p>
             </div>
 
@@ -316,8 +365,7 @@ export default function HomePage() {
                       Radical focus
                     </div>
                     <p className="mt-4 text-sm leading-relaxed text-black/80">
-                      Each block is about one thing only. Clear messaging.
-                      Honest conversion.
+                      One block is one offer. Clear message. Clean conversion.
                     </p>
                   </div>
                   <div>
@@ -334,8 +382,7 @@ export default function HomePage() {
                       Own the link
                     </div>
                     <p className="mt-4 text-sm leading-relaxed text-black/80">
-                      Share a block anywhere: social, email, bio, DM. It works
-                      without context.
+                      Share a block anywhere: social, email, bio, DM.
                     </p>
                   </div>
                 </div>
@@ -349,9 +396,9 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* HOW IT WORKS — structured like a system */}
+      {/* HOW IT WORKS */}
       <Section className="px-6 py-24 md:py-28 border-b border-black">
-        <div className="max-w-350 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
+        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
           <motion.div variants={v.item} className="md:col-span-4">
             <K>How it works</K>
             <h3 className="mt-5 text-2xl tracking-tight font-normal">
@@ -371,11 +418,12 @@ export default function HomePage() {
                     </div>
                     <div className="col-span-10">
                       <div className="text-sm leading-relaxed">
-                        Create a block with title, description, price, delivery.
+                        Create a block with title, description, media, price,
+                        and delivery.
                       </div>
                       <div className="mt-2 text-[11px] leading-relaxed text-black/60">
-                        Digital? deliver a file. Physical? collect shipping
-                        details. Same surface.
+                        Digital? collect what you need. Physical? collect
+                        shipping. Same surface.
                       </div>
                     </div>
                   </div>
@@ -391,7 +439,7 @@ export default function HomePage() {
                         Share the link where you already have attention.
                       </div>
                       <div className="mt-2 text-[11px] leading-relaxed text-black/60">
-                        Website, bio, newsletter, DM — it’s built for context
+                        Website, bio, newsletter, DM — built for context
                         collapse.
                       </div>
                     </div>
@@ -421,7 +469,9 @@ export default function HomePage() {
                   Next
                 </div>
                 <div className="text-sm uppercase tracking-[0.18em]">
-                  <UnderlineLink href="/app/new">Create your first block</UnderlineLink>
+                  <UnderlineLink href="/app/new">
+                    Create your first block
+                  </UnderlineLink>
                 </div>
               </div>
             </div>
@@ -429,9 +479,259 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* FAQ — density without marketing */}
+      {/* DEMO BLOCKS */}
       <Section className="px-6 py-24 md:py-28 border-b border-black">
-        <div className="max-w-350 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
+        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
+          <motion.div variants={v.item} className="md:col-span-4">
+            <K>Demo blocks</K>
+            <h3 className="mt-5 text-2xl tracking-tight font-normal">
+              See what “one thing” looks like.
+            </h3>
+            <p className="mt-6 text-sm leading-relaxed text-black/75 max-w-sm">
+              We launch with curated blocks so it’s instantly obvious what you
+              can sell — and how it should feel.
+            </p>
+            <div className="mt-6 text-sm uppercase tracking-[0.18em]">
+              <UnderlineLink href="/demo">Open demos</UnderlineLink>
+            </div>
+          </motion.div>
+
+          <motion.div variants={v.item} className="md:col-span-8">
+            <div className="border border-black">
+              <div className="grid grid-cols-1 md:grid-cols-2">
+                {[
+                  {
+                    title: "Artist selling a print",
+                    meta: "Physical • 3–6 images",
+                    price: "£35",
+                  },
+                  {
+                    title: "Creator selling merch",
+                    meta: "Physical • Sizes/variants later",
+                    price: "£28",
+                  },
+                  {
+                    title: "Indie maker selling digital",
+                    meta: "Digital • Simple delivery",
+                    price: "£12",
+                  },
+                  {
+                    title: "Pop-up brand selling one item",
+                    meta: "Limited • Weekend drop",
+                    price: "£49",
+                  },
+                ].map((b, idx) => {
+                  const isRight = idx % 2 === 1;
+                  const needsTopBorder = idx >= 2;
+                  return (
+                    <div
+                      key={b.title}
+                      className={[
+                        "p-7 md:p-9",
+                        "border-black",
+                        isRight ? "md:border-l border-t md:border-t-0" : "",
+                        needsTopBorder ? "border-t" : "",
+                        // mobile: always border-t except first
+                        idx === 0 ? "" : "border-t md:border-t-0",
+                      ].join(" ")}
+                    >
+                      <div className="flex items-baseline justify-between gap-6">
+                        <div className="min-w-0">
+                          <div className="text-xs uppercase tracking-[0.18em] text-black/60">
+                            Demo
+                          </div>
+                          <div className="mt-3 text-lg tracking-tight">
+                            {b.title}
+                          </div>
+                          <div className="mt-2 text-[11px] uppercase tracking-[0.18em] text-black/60">
+                            {b.meta}
+                          </div>
+                        </div>
+                        <div className="text-sm uppercase tracking-[0.18em]">
+                          {b.price}
+                        </div>
+                      </div>
+
+                      <div className="mt-6 grid grid-cols-3 gap-2">
+                        <div className="aspect-4/3 border border-black" />
+                        <div className="aspect-4/3 border border-black" />
+                        <div className="aspect-4/3 border border-black" />
+                      </div>
+
+                      <div className="mt-6 text-sm uppercase tracking-[0.18em]">
+                        <UnderlineLink href="/demo">View block</UnderlineLink>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="border-t border-black p-6 md:p-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="text-xs uppercase tracking-[0.18em] text-black/60">
+                  Purpose
+                </div>
+                <div className="text-sm">
+                  Demos make the product legible in seconds.
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </Section>
+
+      {/* WHY NOT SHOPIFY / GUMROAD */}
+      <Section className="px-6 py-24 md:py-28 border-b border-black">
+        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
+          <motion.div variants={v.item} className="md:col-span-4">
+            <K>Why not</K>
+            <h3 className="mt-5 text-2xl tracking-tight font-normal">
+              Ecommerce without the store.
+            </h3>
+            <p className="mt-6 text-sm leading-relaxed text-black/75 max-w-sm">
+              If you want a store, use a store tool. If you just need somewhere
+              to sell one thing — this is lighter, faster, and clearer.
+            </p>
+          </motion.div>
+
+          <motion.div variants={v.item} className="md:col-span-8">
+            <div className="border border-black">
+              <div className="p-6 md:p-8">
+                <div className="grid grid-cols-12 gap-6 text-sm">
+                  <div className="col-span-12 md:col-span-4">
+                    <div className="text-xs uppercase tracking-[0.18em] text-black/60">
+                      ShopABlock
+                    </div>
+                    <ul className="mt-4 space-y-2 text-black/80">
+                      <li>• One page per product</li>
+                      <li>• One CTA: Buy now</li>
+                      <li>• No themes or setup</li>
+                      <li>• Built to share</li>
+                    </ul>
+                  </div>
+
+                  <div className="col-span-12 md:col-span-4">
+                    <div className="text-xs uppercase tracking-[0.18em] text-black/60">
+                      Shopify
+                    </div>
+                    <ul className="mt-4 space-y-2 text-black/80">
+                      <li>• Store + catalog</li>
+                      <li>• Theme choices</li>
+                      <li>• App/plugin stack</li>
+                      <li>• More surface area</li>
+                    </ul>
+                  </div>
+
+                  <div className="col-span-12 md:col-span-4">
+                    <div className="text-xs uppercase tracking-[0.18em] text-black/60">
+                      Gumroad
+                    </div>
+                    <ul className="mt-4 space-y-2 text-black/80">
+                      <li>• Marketplace feel</li>
+                      <li>• Page is templated</li>
+                      <li>• Less “brand page”</li>
+                      <li>• Great for some cases</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-black p-6 md:p-7 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div className="text-xs uppercase tracking-[0.18em] text-black/60">
+                  Rule
+                </div>
+                <div className="text-sm">
+                  If it starts to feel like ecommerce software, we failed.
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </Section>
+
+      {/* PRICING */}
+      <Section className="px-6 py-24 md:py-28 border-b border-black">
+        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
+          <motion.div variants={v.item} className="md:col-span-4">
+            <K>Pricing</K>
+            <h3 className="mt-5 text-2xl tracking-tight font-normal">
+              Buy space, not software.
+            </h3>
+            <p className="mt-6 text-sm leading-relaxed text-black/75 max-w-sm">
+              Blocks are the unit. Start with one, add more when you need them.
+            </p>
+            <div className="mt-6 text-sm uppercase tracking-[0.18em]">
+              <UnderlineLink href="/pricing">See pricing</UnderlineLink>
+            </div>
+          </motion.div>
+
+          <motion.div variants={v.item} className="md:col-span-8">
+            <div className="border border-black">
+              <div className="grid grid-cols-1 md:grid-cols-3">
+                {[
+                  {
+                    name: "Starter",
+                    price: "£9",
+                    meta: "/month • 1 block",
+                    bullets: ["One product page", "Checkout + receipt", "Share link anywhere"],
+                  },
+                  {
+                    name: "Pro",
+                    price: "£19",
+                    meta: "/month • 3 blocks",
+                    bullets: ["Run a few offers", "Fast editor", "Built for conversion"],
+                  },
+                  {
+                    name: "Studio",
+                    price: "£29",
+                    meta: "/month • 10 blocks",
+                    bullets: ["Small collections", "Multiple drops", "Keep it simple"],
+                  },
+                ].map((t, idx) => (
+                  <div
+                    key={t.name}
+                    className={[
+                      "p-7 md:p-9",
+                      idx === 0 ? "" : "border-t md:border-t-0 md:border-l border-black",
+                    ].join(" ")}
+                  >
+                    <div className="text-xs uppercase tracking-[0.18em] text-black/60">
+                      {t.name}
+                    </div>
+                    <div className="mt-4 flex items-baseline justify-between gap-6">
+                      <div className="text-3xl tracking-tight">{t.price}</div>
+                      <div className="text-[11px] uppercase tracking-[0.18em] text-black/60">
+                        {t.meta}
+                      </div>
+                    </div>
+                    <ul className="mt-6 space-y-2 text-sm text-black/80">
+                      {t.bullets.map((b) => (
+                        <li key={b}>• {b}</li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-7 text-sm uppercase tracking-[0.18em]">
+                      <UnderlineLink href="/pricing">Choose {t.name}</UnderlineLink>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t border-black p-6 md:p-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="text-xs uppercase tracking-[0.18em] text-black/60">
+                  Notes
+                </div>
+                <div className="text-sm text-black/80">
+                  Transaction fees apply per sale (processed via KompiPay).
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </Section>
+
+      {/* FAQ */}
+      <Section className="px-6 py-24 md:py-28 border-b border-black">
+        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
           <motion.div variants={v.item} className="md:col-span-4">
             <K>FAQ</K>
             <h3 className="mt-5 text-2xl tracking-tight font-normal">
@@ -441,7 +741,10 @@ export default function HomePage() {
             </h3>
           </motion.div>
 
-          <motion.div variants={v.item} className="md:col-span-8 border border-black">
+          <motion.div
+            variants={v.item}
+            className="md:col-span-8 border border-black"
+          >
             <div className="divide-y divide-black">
               <details className="p-6 md:p-8 group">
                 <summary className="cursor-pointer list-none flex items-center justify-between gap-6">
@@ -464,8 +767,7 @@ export default function HomePage() {
                   </span>
                 </summary>
                 <p className="mt-4 text-sm leading-relaxed text-black/80 max-w-2xl">
-                  Physical or digital. A product, a print, a file, a ticket, a
-                  membership later — the primitive stays the same.
+                  Physical or digital. One thing per block. The point is clarity.
                 </p>
               </details>
 
@@ -477,8 +779,8 @@ export default function HomePage() {
                   </span>
                 </summary>
                 <p className="mt-4 text-sm leading-relaxed text-black/80 max-w-2xl">
-                  Payments are a plug-in layer. The block is the surface. You
-                  can change providers without rebuilding your product page.
+                  KompiPay handles Stripe Express onboarding, payments and payouts.
+                  You don’t need to touch Stripe directly.
                 </p>
               </details>
             </div>
@@ -486,23 +788,45 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* FOOT */}
+      {/* FINAL CTA */}
       <Section className="px-6 py-24 md:py-28">
-        <div className="max-w-350 flex flex-col md:flex-row md:items-center md:justify-between gap-10">
-          <motion.div variants={v.item}>
-            <div className="text-xs uppercase tracking-[0.18em] text-black/60">
-              ShopABlock
-            </div>
-            <div className="mt-3 text-lg tracking-tight">
-              Build your first block in under a minute.
-            </div>
-          </motion.div>
+        <div className="max-w-350 mx-auto border border-black">
+          <div className="p-7 md:p-9 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+            <motion.div variants={v.item}>
+              <div className="text-xs uppercase tracking-[0.18em] text-black/60">
+                ShopABlock
+              </div>
+              <div className="mt-3 text-2xl tracking-tight">
+                Build your first block in under a minute.
+              </div>
+              <div className="mt-4 text-sm text-black/75">
+                One product page. One checkout. One link to share.
+              </div>
+            </motion.div>
 
-          <motion.div variants={v.item} className="text-sm uppercase tracking-[0.18em] flex gap-10">
-            <UnderlineLink href="/app/new">Create</UnderlineLink>
-            <UnderlineLink href="/explore">Explore</UnderlineLink>
-            <UnderlineLink href="/pricing">Pricing</UnderlineLink>
-          </motion.div>
+            <motion.div
+              variants={v.item}
+              className="flex flex-col sm:flex-row gap-3"
+            >
+              <CTAButton href="/app/new" variant="primary">
+                Create a block
+              </CTAButton>
+              <CTAButton href="/pricing" variant="ghost">
+                View pricing
+              </CTAButton>
+            </motion.div>
+          </div>
+
+          <div className="border-t border-black p-6 md:p-7 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="text-xs uppercase tracking-[0.18em] text-black/60">
+              Links
+            </div>
+            <div className="text-sm uppercase tracking-[0.18em] flex flex-wrap gap-x-10 gap-y-4">
+              <UnderlineLink href="/app/new">Create</UnderlineLink>
+              <UnderlineLink href="/demo">Demo</UnderlineLink>
+              <UnderlineLink href="/pricing">Pricing</UnderlineLink>
+            </div>
+          </div>
         </div>
       </Section>
     </main>

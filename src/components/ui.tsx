@@ -1,3 +1,4 @@
+//src/components/ui.tsx
 import React from "react";
 
 export function Band({ children }: { children: React.ReactNode }) {
