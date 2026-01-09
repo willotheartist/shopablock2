@@ -4,6 +4,8 @@
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useMemo, useRef } from "react";
+import HowItWorksEditorial from "@/components/home/HowItWorksEditorial";
+import FAQs from "@/components/home/faqs";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -167,7 +169,6 @@ export default function HomePage() {
 
       {/* MANIFESTO / POSITION */}
       <Section className="px-6 py-24 md:py-28 border-b border-black">
-        {/* FIX: add `grid` so cols work */}
         <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
           <motion.div variants={v.item} className="md:col-span-4">
             <K>Position</K>
@@ -397,87 +398,7 @@ export default function HomePage() {
       </Section>
 
       {/* HOW IT WORKS */}
-      <Section className="px-6 py-24 md:py-28 border-b border-black">
-        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
-          <motion.div variants={v.item} className="md:col-span-4">
-            <K>How it works</K>
-            <h3 className="mt-5 text-2xl tracking-tight font-normal">
-              Three steps.
-              <br />
-              No ceremony.
-            </h3>
-          </motion.div>
-
-          <motion.div variants={v.item} className="md:col-span-8">
-            <div className="border border-black">
-              <div className="p-6 md:p-8">
-                <div className="grid gap-6">
-                  <div className="grid grid-cols-12 items-start gap-6">
-                    <div className="col-span-2 text-xs uppercase tracking-[0.18em] text-black/60">
-                      01
-                    </div>
-                    <div className="col-span-10">
-                      <div className="text-sm leading-relaxed">
-                        Create a block with title, description, media, price,
-                        and delivery.
-                      </div>
-                      <div className="mt-2 text-[11px] leading-relaxed text-black/60">
-                        Digital? collect what you need. Physical? collect
-                        shipping. Same surface.
-                      </div>
-                    </div>
-                  </div>
-
-                  <Rule />
-
-                  <div className="grid grid-cols-12 items-start gap-6">
-                    <div className="col-span-2 text-xs uppercase tracking-[0.18em] text-black/60">
-                      02
-                    </div>
-                    <div className="col-span-10">
-                      <div className="text-sm leading-relaxed">
-                        Share the link where you already have attention.
-                      </div>
-                      <div className="mt-2 text-[11px] leading-relaxed text-black/60">
-                        Website, bio, newsletter, DM — built for context
-                        collapse.
-                      </div>
-                    </div>
-                  </div>
-
-                  <Rule />
-
-                  <div className="grid grid-cols-12 items-start gap-6">
-                    <div className="col-span-2 text-xs uppercase tracking-[0.18em] text-black/60">
-                      03
-                    </div>
-                    <div className="col-span-10">
-                      <div className="text-sm leading-relaxed">
-                        Get paid. Fulfil the order. Done.
-                      </div>
-                      <div className="mt-2 text-[11px] leading-relaxed text-black/60">
-                        Receipts, order status, and delivery flow live with the
-                        block.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-black p-6 md:p-7 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                <div className="text-xs uppercase tracking-[0.18em] text-black/60">
-                  Next
-                </div>
-                <div className="text-sm uppercase tracking-[0.18em]">
-                  <UnderlineLink href="/app/new">
-                    Create your first block
-                  </UnderlineLink>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </Section>
+      <HowItWorksEditorial />
 
       {/* DEMO BLOCKS */}
       <Section className="px-6 py-24 md:py-28 border-b border-black">
@@ -531,7 +452,6 @@ export default function HomePage() {
                         "border-black",
                         isRight ? "md:border-l border-t md:border-t-0" : "",
                         needsTopBorder ? "border-t" : "",
-                        // mobile: always border-t except first
                         idx === 0 ? "" : "border-t md:border-t-0",
                       ].join(" ")}
                     >
@@ -672,7 +592,11 @@ export default function HomePage() {
                     name: "Starter",
                     price: "£9",
                     meta: "/month • 1 block",
-                    bullets: ["One product page", "Checkout + receipt", "Share link anywhere"],
+                    bullets: [
+                      "One product page",
+                      "Checkout + receipt",
+                      "Share link anywhere",
+                    ],
                   },
                   {
                     name: "Pro",
@@ -710,7 +634,9 @@ export default function HomePage() {
                     </ul>
 
                     <div className="mt-7 text-sm uppercase tracking-[0.18em]">
-                      <UnderlineLink href="/pricing">Choose {t.name}</UnderlineLink>
+                      <UnderlineLink href="/pricing">
+                        Choose {t.name}
+                      </UnderlineLink>
                     </div>
                   </div>
                 ))}
@@ -729,64 +655,8 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* FAQ */}
-      <Section className="px-6 py-24 md:py-28 border-b border-black">
-        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
-          <motion.div variants={v.item} className="md:col-span-4">
-            <K>FAQ</K>
-            <h3 className="mt-5 text-2xl tracking-tight font-normal">
-              Clear answers.
-              <br />
-              No pitch.
-            </h3>
-          </motion.div>
-
-          <motion.div
-            variants={v.item}
-            className="md:col-span-8 border border-black"
-          >
-            <div className="divide-y divide-black">
-              <details className="p-6 md:p-8 group">
-                <summary className="cursor-pointer list-none flex items-center justify-between gap-6">
-                  <span className="text-sm">Is this Shopify?</span>
-                  <span className="text-xs uppercase tracking-[0.18em] text-black/60 group-open:opacity-100 opacity-80">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-4 text-sm leading-relaxed text-black/80 max-w-2xl">
-                  No. Shopify is a full store. ShopABlock is a single selling
-                  unit — a page + checkout for one product.
-                </p>
-              </details>
-
-              <details className="p-6 md:p-8 group">
-                <summary className="cursor-pointer list-none flex items-center justify-between gap-6">
-                  <span className="text-sm">What can I sell?</span>
-                  <span className="text-xs uppercase tracking-[0.18em] text-black/60 group-open:opacity-100 opacity-80">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-4 text-sm leading-relaxed text-black/80 max-w-2xl">
-                  Physical or digital. One thing per block. The point is clarity.
-                </p>
-              </details>
-
-              <details className="p-6 md:p-8 group">
-                <summary className="cursor-pointer list-none flex items-center justify-between gap-6">
-                  <span className="text-sm">What about payments?</span>
-                  <span className="text-xs uppercase tracking-[0.18em] text-black/60 group-open:opacity-100 opacity-80">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-4 text-sm leading-relaxed text-black/80 max-w-2xl">
-                  KompiPay handles Stripe Express onboarding, payments and payouts.
-                  You don’t need to touch Stripe directly.
-                </p>
-              </details>
-            </div>
-          </motion.div>
-        </div>
-      </Section>
+      {/* FAQ (NEW COMPONENT) */}
+      <FAQs />
 
       {/* FINAL CTA */}
       <Section className="px-6 py-24 md:py-28">

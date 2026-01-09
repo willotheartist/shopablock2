@@ -1,14 +1,14 @@
 # 📁 shopablock2 - Project Structure
 
-*Generated on: 08/01/2026, 12:48:45*
+*Generated on: 09/01/2026, 11:20:48*
 
 ## 📋 Quick Overview
 
 | Metric | Value |
 |--------|-------|
-| 📄 Total Files | 57 |
-| 📁 Total Folders | 32 |
-| 🌳 Max Depth | 5 levels |
+| 📄 Total Files | 80 |
+| 📁 Total Folders | 43 |
+| 🌳 Max Depth | 6 levels |
 | 🛠️ Tech Stack | React, Next.js, TypeScript, CSS, Node.js |
 
 ## ⭐ Important Files
@@ -24,42 +24,42 @@
 
 ### By File Type
 
-- ⚛️ **.tsx** (React TypeScript files): 17 files (29.8%)
-- 🔷 **.ts** (TypeScript files): 13 files (22.8%)
-- 🎨 **.svg** (SVG images): 5 files (8.8%)
-- ⚙️ **.json** (JSON files): 3 files (5.3%)
-- 📖 **.md** (Markdown files): 2 files (3.5%)
-- 📄 **.db** (Other files): 2 files (3.5%)
-- 📄 **.mjs** (Other files): 2 files (3.5%)
-- ⚙️ **.yaml** (YAML files): 2 files (3.5%)
-- 📄 **.sql** (Other files): 2 files (3.5%)
-- 🎨 **.css** (Stylesheets): 2 files (3.5%)
-- 🚫 **.gitignore** (Git ignore): 1 files (1.8%)
-- 📄 **.txt** (Text files): 1 files (1.8%)
-- 📄 **.db-journal** (Other files): 1 files (1.8%)
-- ⚙️ **.toml** (TOML files): 1 files (1.8%)
-- 📄 **.prisma** (Other files): 1 files (1.8%)
-- 🖼️ **.png** (PNG images): 1 files (1.8%)
-- 🖼️ **.ico** (Icon files): 1 files (1.8%)
+- ⚛️ **.tsx** (React TypeScript files): 26 files (32.5%)
+- 🔷 **.ts** (TypeScript files): 16 files (20.0%)
+- 🖼️ **.png** (PNG images): 11 files (13.8%)
+- 🎨 **.svg** (SVG images): 5 files (6.3%)
+- ⚙️ **.json** (JSON files): 3 files (3.8%)
+- 📄 **.sql** (Other files): 3 files (3.8%)
+- 📖 **.md** (Markdown files): 2 files (2.5%)
+- 📄 **.db** (Other files): 2 files (2.5%)
+- 📄 **.mjs** (Other files): 2 files (2.5%)
+- ⚙️ **.yaml** (YAML files): 2 files (2.5%)
+- 🎨 **.css** (Stylesheets): 2 files (2.5%)
+- 🚫 **.gitignore** (Git ignore): 1 files (1.3%)
+- 📄 **.txt** (Text files): 1 files (1.3%)
+- 📄 **.db-journal** (Other files): 1 files (1.3%)
+- ⚙️ **.toml** (TOML files): 1 files (1.3%)
+- 📄 **.prisma** (Other files): 1 files (1.3%)
+- 🖼️ **.ico** (Icon files): 1 files (1.3%)
 
 ### By Category
 
-- **React**: 17 files (29.8%)
-- **TypeScript**: 13 files (22.8%)
-- **Other**: 8 files (14.0%)
-- **Assets**: 7 files (12.3%)
-- **Config**: 6 files (10.5%)
-- **Docs**: 3 files (5.3%)
-- **Styles**: 2 files (3.5%)
-- **DevOps**: 1 files (1.8%)
+- **React**: 26 files (32.5%)
+- **Assets**: 17 files (21.3%)
+- **TypeScript**: 16 files (20.0%)
+- **Other**: 9 files (11.3%)
+- **Config**: 6 files (7.5%)
+- **Docs**: 3 files (3.8%)
+- **Styles**: 2 files (2.5%)
+- **DevOps**: 1 files (1.3%)
 
 ### 📁 Largest Directories
 
-- **root**: 57 files
-- **src**: 29 files
-- **src/app**: 20 files
-- **prisma**: 6 files
-- **public**: 6 files
+- **root**: 80 files
+- **src**: 41 files
+- **src/app**: 28 files
+- **public**: 16 files
+- **public/uploads**: 10 files
 
 ## 🌳 Directory Structure
 
@@ -85,6 +85,8 @@ shopablock2/
 │   │   │   └── 📄 migration.sql
 │   │   ├── 📂 20260107173054_auth/
 │   │   │   └── 📄 migration.sql
+│   │   ├── 📂 20260108150645_add_block_media/
+│   │   │   └── 📄 migration.sql
 │   │   └── ⚙️ migration_lock.toml
 │   └── 📄 schema.prisma
 ├── 📖 project_structure.md
@@ -94,21 +96,40 @@ shopablock2/
 │   ├── 🎨 file.svg
 │   ├── 🎨 globe.svg
 │   ├── 🎨 next.svg
+│   ├── 📂 uploads/
+│   │   ├── 🖼️ 346a7334-91df-4644-9e4c-831bf6629065.png
+│   │   ├── 🖼️ 6ec25b27-3b49-4606-8213-096ba2242e82.png
+│   │   ├── 🖼️ 6f47cf96-3c9c-47c5-b86c-a208151c267b.png
+│   │   ├── 🖼️ 7264e916-9b38-487f-9473-207d41d90602.png
+│   │   ├── 🖼️ 7b135ffc-cc02-4aff-a32a-ae9749085829.png
+│   │   ├── 🖼️ 8ce89270-6c67-40ce-9d23-f12b326171fa.png
+│   │   ├── 🖼️ 9f87eaf8-65a3-45d0-85c0-448d3dc41335.png
+│   │   ├── 🖼️ a7f96b4f-7545-405e-895e-a7c901e3e085.png
+│   │   ├── 📂 cmk5l6tp10001hni9ih4pzueb/
+│   │   │   └── 🖼️ 7-mk5l6tqz-v8a8hl.png
+│   │   └── 🖼️ f278e628-1a18-4a77-a50e-68e5a0addd6c.png
 │   ├── 🎨 vercel.svg
 │   └── 🎨 window.svg
 ├── 🔴 📖 **README.md**
 ├── 📁 src/
 │   ├── 🚀 app/
 │   │   ├── 📂 [handle]/
-│   │   │   └── ⚛️ page.tsx
+│   │   │   ├── ⚛️ page.tsx
+│   │   │   └── ⚛️ ProductClient.tsx
 │   │   ├── 🔌 api/
-│   │   │   └── 📂 auth/
+│   │   │   ├── 📂 auth/
+│   │   │   │   ├── 📂 reset/
+│   │   │   │   │   └── 🔷 route.ts
 │   │   │   │   ├── 📂 sign-in/
 │   │   │   │   │   └── 🔷 route.ts
 │   │   │   │   ├── 📂 sign-out/
 │   │   │   │   │   └── 🔷 route.ts
 │   │   │   │   └── 📂 sign-up/
 │   │   │   │   │   └── 🔷 route.ts
+│   │   │   └── 📂 blocks/
+│   │   │   │   └── 📂 [id]/
+│   │   │   │   │   └── 📂 media/
+│   │   │   │   │   │   └── 🔷 route.ts
 │   │   ├── 🚀 app/
 │   │   │   ├── 📂 blocks/
 │   │   │   │   └── 📂 [id]/
@@ -120,12 +141,17 @@ shopablock2/
 │   │   │   │   │   └── ⚛️ page.tsx
 │   │   │   │   └── ⚛️ page.tsx
 │   │   │   ├── ⚛️ page.tsx
+│   │   │   ├── 📂 reset/
+│   │   │   │   └── ⚛️ page.tsx
 │   │   │   └── 📂 settings/
 │   │   │   │   └── ⚛️ page.tsx
 │   │   ├── 📂 checkout/
 │   │   │   └── 📂 [orderId]/
 │   │   │   │   └── ⚛️ page.tsx
 │   │   ├── 📂 demo/
+│   │   │   └── ⚛️ page.tsx
+│   │   ├── 📂 explore/
+│   │   │   ├── ⚛️ ExploreGrid.tsx
 │   │   │   └── ⚛️ page.tsx
 │   │   ├── 🖼️ favicon.ico
 │   │   ├── 🎨 globals.css
@@ -136,19 +162,27 @@ shopablock2/
 │   │   ├── 📂 receipt/
 │   │   │   └── 📂 [orderId]/
 │   │   │   │   └── ⚛️ page.tsx
-│   │   ├── 📂 sign-in/
+│   │   ├── 📂 reset/
 │   │   │   └── ⚛️ page.tsx
+│   │   ├── 📂 sign-in/
+│   │   │   ├── ⚛️ page.tsx
+│   │   │   └── ⚛️ sign-in-error-cleaner.tsx
 │   │   └── 📂 sign-up/
 │   │   │   └── ⚛️ page.tsx
 │   ├── 🧩 components/
+│   │   ├── ⚛️ BlockMediaUploader.tsx
+│   │   ├── 📂 explore/
+│   │   │   └── ⚛️ ExploreGrid.tsx
 │   │   ├── ⚛️ SiteHeader.tsx
+│   │   ├── ⚛️ SiteHeaderClient.tsx
 │   │   └── ⚛️ ui.tsx
 │   ├── 📚 lib/
 │   │   ├── 🔷 actions.ts
 │   │   ├── 🔷 auth.ts
 │   │   ├── 🔷 blocks.ts
 │   │   ├── 🔷 db.ts
-│   │   └── 🔷 orders.ts
+│   │   ├── 🔷 orders.ts
+│   │   └── 🔷 uploads.ts
 │   ├── 🔷 middleware.ts
 │   └── 🎨 styles/
 │   │   └── 🎨 tokens.css
