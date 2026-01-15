@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useMemo, useRef } from "react";
 import HowItWorksEditorial from "@/components/home/HowItWorksEditorial";
 import FAQs from "@/components/home/faqs";
+import ShopABlocks from "@/components/home/shopablocks";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -47,17 +48,6 @@ function Section({
     >
       {children}
     </motion.section>
-  );
-}
-
-function Rule() {
-  const v = useReveal();
-  return (
-    <motion.div
-      variants={v.line}
-      style={{ originX: 0 }}
-      className="h-px bg-black"
-    />
   );
 }
 
@@ -228,6 +218,9 @@ export default function HomePage() {
         </div>
       </Section>
 
+      {/* 6-CARD VISUAL SECTION */}
+      <ShopABlocks />
+
       {/* “ANATOMY” */}
       <Section className="px-6 py-24 md:py-28 border-b border-black">
         <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14 items-start">
@@ -263,9 +256,7 @@ export default function HomePage() {
                         @studio / limited run
                       </div>
                     </div>
-                    <div className="text-sm uppercase tracking-[0.18em]">
-                      £48
-                    </div>
+                    <div className="text-sm uppercase tracking-[0.18em]">£48</div>
                   </div>
 
                   <div className="mt-7 grid grid-cols-3 gap-2">
@@ -568,94 +559,7 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* PRICING */}
-      <Section className="px-6 py-24 md:py-28 border-b border-black">
-        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
-          <motion.div variants={v.item} className="md:col-span-4">
-            <K>Pricing</K>
-            <h3 className="mt-5 text-2xl tracking-tight font-normal">
-              Buy space, not software.
-            </h3>
-            <p className="mt-6 text-sm leading-relaxed text-black/75 max-w-sm">
-              Blocks are the unit. Start with one, add more when you need them.
-            </p>
-            <div className="mt-6 text-sm uppercase tracking-[0.18em]">
-              <UnderlineLink href="/pricing">See pricing</UnderlineLink>
-            </div>
-          </motion.div>
-
-          <motion.div variants={v.item} className="md:col-span-8">
-            <div className="border border-black">
-              <div className="grid grid-cols-1 md:grid-cols-3">
-                {[
-                  {
-                    name: "Starter",
-                    price: "£9",
-                    meta: "/month • 1 block",
-                    bullets: [
-                      "One product page",
-                      "Checkout + receipt",
-                      "Share link anywhere",
-                    ],
-                  },
-                  {
-                    name: "Pro",
-                    price: "£19",
-                    meta: "/month • 3 blocks",
-                    bullets: ["Run a few offers", "Fast editor", "Built for conversion"],
-                  },
-                  {
-                    name: "Studio",
-                    price: "£29",
-                    meta: "/month • 10 blocks",
-                    bullets: ["Small collections", "Multiple drops", "Keep it simple"],
-                  },
-                ].map((t, idx) => (
-                  <div
-                    key={t.name}
-                    className={[
-                      "p-7 md:p-9",
-                      idx === 0 ? "" : "border-t md:border-t-0 md:border-l border-black",
-                    ].join(" ")}
-                  >
-                    <div className="text-xs uppercase tracking-[0.18em] text-black/60">
-                      {t.name}
-                    </div>
-                    <div className="mt-4 flex items-baseline justify-between gap-6">
-                      <div className="text-3xl tracking-tight">{t.price}</div>
-                      <div className="text-[11px] uppercase tracking-[0.18em] text-black/60">
-                        {t.meta}
-                      </div>
-                    </div>
-                    <ul className="mt-6 space-y-2 text-sm text-black/80">
-                      {t.bullets.map((b) => (
-                        <li key={b}>• {b}</li>
-                      ))}
-                    </ul>
-
-                    <div className="mt-7 text-sm uppercase tracking-[0.18em]">
-                      <UnderlineLink href="/pricing">
-                        Choose {t.name}
-                      </UnderlineLink>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="border-t border-black p-6 md:p-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-black/60">
-                  Notes
-                </div>
-                <div className="text-sm text-black/80">
-                  Transaction fees apply per sale (processed via KompiPay).
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </Section>
-
-      {/* FAQ (NEW COMPONENT) */}
+      {/* FAQ */}
       <FAQs />
 
       {/* FINAL CTA */}
@@ -681,8 +585,8 @@ export default function HomePage() {
               <CTAButton href="/app/new" variant="primary">
                 Create a block
               </CTAButton>
-              <CTAButton href="/pricing" variant="ghost">
-                View pricing
+              <CTAButton href="/demo" variant="ghost">
+                View demo
               </CTAButton>
             </motion.div>
           </div>
@@ -694,7 +598,6 @@ export default function HomePage() {
             <div className="text-sm uppercase tracking-[0.18em] flex flex-wrap gap-x-10 gap-y-4">
               <UnderlineLink href="/app/new">Create</UnderlineLink>
               <UnderlineLink href="/demo">Demo</UnderlineLink>
-              <UnderlineLink href="/pricing">Pricing</UnderlineLink>
             </div>
           </div>
         </div>
