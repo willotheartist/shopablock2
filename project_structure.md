@@ -1,12 +1,12 @@
 # 📁 shopablock2 - Project Structure
 
-*Generated on: 15/01/2026, 14:07:01*
+*Generated on: 17/01/2026, 11:57:25*
 
 ## 📋 Quick Overview
 
 | Metric | Value |
 |--------|-------|
-| 📄 Total Files | 95 |
+| 📄 Total Files | 99 |
 | 📁 Total Folders | 45 |
 | 🌳 Max Depth | 6 levels |
 | 🛠️ Tech Stack | React, Next.js, TypeScript, CSS, Node.js |
@@ -24,42 +24,42 @@
 
 ### By File Type
 
-- ⚛️ **.tsx** (React TypeScript files): 29 files (30.5%)
-- 🖼️ **.png** (PNG images): 23 files (24.2%)
-- 🔷 **.ts** (TypeScript files): 16 files (16.8%)
-- 🎨 **.svg** (SVG images): 5 files (5.3%)
-- ⚙️ **.json** (JSON files): 3 files (3.2%)
-- 📄 **.sql** (Other files): 3 files (3.2%)
-- 📖 **.md** (Markdown files): 2 files (2.1%)
-- 📄 **.db** (Other files): 2 files (2.1%)
-- 📄 **.mjs** (Other files): 2 files (2.1%)
-- ⚙️ **.yaml** (YAML files): 2 files (2.1%)
-- 🎨 **.css** (Stylesheets): 2 files (2.1%)
-- 🚫 **.gitignore** (Git ignore): 1 files (1.1%)
-- 📄 **.txt** (Text files): 1 files (1.1%)
-- 📄 **.db-journal** (Other files): 1 files (1.1%)
-- ⚙️ **.toml** (TOML files): 1 files (1.1%)
-- 📄 **.prisma** (Other files): 1 files (1.1%)
-- 🖼️ **.ico** (Icon files): 1 files (1.1%)
+- ⚛️ **.tsx** (React TypeScript files): 33 files (33.3%)
+- 🖼️ **.png** (PNG images): 23 files (23.2%)
+- 🔷 **.ts** (TypeScript files): 16 files (16.2%)
+- 🎨 **.svg** (SVG images): 5 files (5.1%)
+- ⚙️ **.json** (JSON files): 3 files (3.0%)
+- 📄 **.sql** (Other files): 3 files (3.0%)
+- 📖 **.md** (Markdown files): 2 files (2.0%)
+- 📄 **.db** (Other files): 2 files (2.0%)
+- 📄 **.mjs** (Other files): 2 files (2.0%)
+- ⚙️ **.yaml** (YAML files): 2 files (2.0%)
+- 🎨 **.css** (Stylesheets): 2 files (2.0%)
+- 🚫 **.gitignore** (Git ignore): 1 files (1.0%)
+- 📄 **.txt** (Text files): 1 files (1.0%)
+- 📄 **.db-journal** (Other files): 1 files (1.0%)
+- ⚙️ **.toml** (TOML files): 1 files (1.0%)
+- 📄 **.prisma** (Other files): 1 files (1.0%)
+- 🖼️ **.ico** (Icon files): 1 files (1.0%)
 
 ### By Category
 
-- **Assets**: 29 files (30.5%)
-- **React**: 29 files (30.5%)
-- **TypeScript**: 16 files (16.8%)
-- **Other**: 9 files (9.5%)
-- **Config**: 6 files (6.3%)
-- **Docs**: 3 files (3.2%)
-- **Styles**: 2 files (2.1%)
-- **DevOps**: 1 files (1.1%)
+- **React**: 33 files (33.3%)
+- **Assets**: 29 files (29.3%)
+- **TypeScript**: 16 files (16.2%)
+- **Other**: 9 files (9.1%)
+- **Config**: 6 files (6.1%)
+- **Docs**: 3 files (3.0%)
+- **Styles**: 2 files (2.0%)
+- **DevOps**: 1 files (1.0%)
 
 ### 📁 Largest Directories
 
-- **root**: 95 files
-- **src**: 44 files
+- **root**: 99 files
+- **src**: 48 files
 - **public**: 28 files
 - **src/app**: 28 files
-- **public/uploads**: 10 files
+- **src/components**: 12 files
 
 ## 🌳 Directory Structure
 
@@ -187,9 +187,13 @@ shopablock2/
 │   │   ├── 📂 explore/
 │   │   │   └── ⚛️ ExploreGrid.tsx
 │   │   ├── 📂 home/
+│   │   │   ├── ⚛️ aha.tsx
+│   │   │   ├── ⚛️ categories.tsx
 │   │   │   ├── ⚛️ faqs.tsx
 │   │   │   ├── ⚛️ HowItWorksEditorial.tsx
-│   │   │   └── ⚛️ shopablocks.tsx
+│   │   │   ├── ⚛️ shopablocks.tsx
+│   │   │   ├── ⚛️ stacks.tsx
+│   │   │   └── ⚛️ testimonials.tsx
 │   │   ├── ⚛️ SiteHeader.tsx
 │   │   ├── ⚛️ SiteHeaderClient.tsx
 │   │   └── ⚛️ ui.tsx

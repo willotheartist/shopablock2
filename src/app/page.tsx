@@ -7,6 +7,10 @@ import { useMemo, useRef } from "react";
 import HowItWorksEditorial from "@/components/home/HowItWorksEditorial";
 import FAQs from "@/components/home/faqs";
 import ShopABlocks from "@/components/home/shopablocks";
+import Stacks from "@/components/home/stacks";
+import AhaSection from "@/components/home/aha";
+import Categories from "@/components/home/categories";
+import Testimonials from "@/components/home/testimonials";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -157,66 +161,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* MANIFESTO / POSITION */}
-      <Section className="px-6 py-24 md:py-28 border-b border-black">
-        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
-          <motion.div variants={v.item} className="md:col-span-4">
-            <K>Position</K>
-            <h2 className="mt-5 text-3xl leading-tight tracking-tight font-normal">
-              A block is a selling primitive.
-              <br />
-              Not a store.
-            </h2>
-            <p className="mt-6 text-sm leading-relaxed text-black/75 max-w-sm">
-              Most tools push you into catalogs, templates, and endless setup.
-              ShopABlock removes everything that isn’t selling.
-            </p>
-          </motion.div>
+      {/* CLEAR VISUAL AHA + STACK */}
+      <AhaSection />
+      <Stacks />
 
-          <motion.div variants={v.item} className="md:col-span-8">
-            <div className="border border-black">
-              <div className="grid grid-cols-1 md:grid-cols-2 border-b border-black">
-                <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-black">
-                  <K>What you get</K>
-                  <div className="mt-6 text-sm leading-relaxed">
-                    <ul className="space-y-3">
-                      <li>• A public product page (one link)</li>
-                      <li>• Checkout + receipt</li>
-                      <li>• Delivery: digital or physical</li>
-                      <li>• Orders dashboard</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="p-6 md:p-8">
-                  <K>What you avoid</K>
-                  <div className="mt-6 text-sm leading-relaxed">
-                    <ul className="space-y-3">
-                      <li>• Themes and templates</li>
-                      <li>• App/plugin sprawl</li>
-                      <li>• Catalog management</li>
-                      <li>• “Funnel” aesthetics</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="text-sm text-black/75 leading-relaxed">
-                  <span className="uppercase tracking-[0.18em] text-black/60 text-xs">
-                    Mental model
-                  </span>
-                  <div className="mt-2">
-                    Product → Block → Link → Checkout → Delivery
-                  </div>
-                </div>
-                <div className="text-sm uppercase tracking-[0.18em]">
-                  <UnderlineLink href="/app/new">Make one now</UnderlineLink>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </Section>
+      {/* CATEGORIES MARQUEE */}
+      <Categories />
 
       {/* 6-CARD VISUAL SECTION */}
       <ShopABlocks />
@@ -331,233 +281,11 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* PRINCIPLES */}
-      <Section className="px-6 py-24 md:py-28 border-b border-black">
-        <div className="max-w-350 mx-auto">
-          <motion.div
-            variants={v.item}
-            className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14"
-          >
-            <div className="md:col-span-4">
-              <K>Principles</K>
-              <h3 className="mt-5 text-2xl tracking-tight font-normal">
-                Designed to stay small.
-              </h3>
-              <p className="mt-6 text-sm leading-relaxed text-black/75 max-w-sm">
-                The point is restraint: fewer features, fewer decisions, fewer
-                ways to break your selling flow.
-              </p>
-            </div>
-
-            <div className="md:col-span-8 border border-black">
-              <div className="p-6 md:p-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                  <div>
-                    <div className="text-xs uppercase tracking-[0.18em]">
-                      Radical focus
-                    </div>
-                    <p className="mt-4 text-sm leading-relaxed text-black/80">
-                      One block is one offer. Clear message. Clean conversion.
-                    </p>
-                  </div>
-                  <div>
-                    <div className="text-xs uppercase tracking-[0.18em]">
-                      Fast by default
-                    </div>
-                    <p className="mt-4 text-sm leading-relaxed text-black/80">
-                      No themes, no plugins, no layout decisions. Blocks load
-                      fast and work everywhere.
-                    </p>
-                  </div>
-                  <div>
-                    <div className="text-xs uppercase tracking-[0.18em]">
-                      Own the link
-                    </div>
-                    <p className="mt-4 text-sm leading-relaxed text-black/80">
-                      Share a block anywhere: social, email, bio, DM.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="border-t border-black p-6 md:p-7 flex items-center justify-between text-xs uppercase tracking-[0.18em]">
-                <span className="text-black/60">Constraint is the feature</span>
-                <span className="text-black/60">—</span>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </Section>
+      {/* TESTIMONIALS (replaces Principles) */}
+      <Testimonials />
 
       {/* HOW IT WORKS */}
       <HowItWorksEditorial />
-
-      {/* DEMO BLOCKS */}
-      <Section className="px-6 py-24 md:py-28 border-b border-black">
-        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
-          <motion.div variants={v.item} className="md:col-span-4">
-            <K>Demo blocks</K>
-            <h3 className="mt-5 text-2xl tracking-tight font-normal">
-              See what “one thing” looks like.
-            </h3>
-            <p className="mt-6 text-sm leading-relaxed text-black/75 max-w-sm">
-              We launch with curated blocks so it’s instantly obvious what you
-              can sell — and how it should feel.
-            </p>
-            <div className="mt-6 text-sm uppercase tracking-[0.18em]">
-              <UnderlineLink href="/demo">Open demos</UnderlineLink>
-            </div>
-          </motion.div>
-
-          <motion.div variants={v.item} className="md:col-span-8">
-            <div className="border border-black">
-              <div className="grid grid-cols-1 md:grid-cols-2">
-                {[
-                  {
-                    title: "Artist selling a print",
-                    meta: "Physical • 3–6 images",
-                    price: "£35",
-                  },
-                  {
-                    title: "Creator selling merch",
-                    meta: "Physical • Sizes/variants later",
-                    price: "£28",
-                  },
-                  {
-                    title: "Indie maker selling digital",
-                    meta: "Digital • Simple delivery",
-                    price: "£12",
-                  },
-                  {
-                    title: "Pop-up brand selling one item",
-                    meta: "Limited • Weekend drop",
-                    price: "£49",
-                  },
-                ].map((b, idx) => {
-                  const isRight = idx % 2 === 1;
-                  const needsTopBorder = idx >= 2;
-                  return (
-                    <div
-                      key={b.title}
-                      className={[
-                        "p-7 md:p-9",
-                        "border-black",
-                        isRight ? "md:border-l border-t md:border-t-0" : "",
-                        needsTopBorder ? "border-t" : "",
-                        idx === 0 ? "" : "border-t md:border-t-0",
-                      ].join(" ")}
-                    >
-                      <div className="flex items-baseline justify-between gap-6">
-                        <div className="min-w-0">
-                          <div className="text-xs uppercase tracking-[0.18em] text-black/60">
-                            Demo
-                          </div>
-                          <div className="mt-3 text-lg tracking-tight">
-                            {b.title}
-                          </div>
-                          <div className="mt-2 text-[11px] uppercase tracking-[0.18em] text-black/60">
-                            {b.meta}
-                          </div>
-                        </div>
-                        <div className="text-sm uppercase tracking-[0.18em]">
-                          {b.price}
-                        </div>
-                      </div>
-
-                      <div className="mt-6 grid grid-cols-3 gap-2">
-                        <div className="aspect-4/3 border border-black" />
-                        <div className="aspect-4/3 border border-black" />
-                        <div className="aspect-4/3 border border-black" />
-                      </div>
-
-                      <div className="mt-6 text-sm uppercase tracking-[0.18em]">
-                        <UnderlineLink href="/demo">View block</UnderlineLink>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="border-t border-black p-6 md:p-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-black/60">
-                  Purpose
-                </div>
-                <div className="text-sm">
-                  Demos make the product legible in seconds.
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </Section>
-
-      {/* WHY NOT SHOPIFY / GUMROAD */}
-      <Section className="px-6 py-24 md:py-28 border-b border-black">
-        <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
-          <motion.div variants={v.item} className="md:col-span-4">
-            <K>Why not</K>
-            <h3 className="mt-5 text-2xl tracking-tight font-normal">
-              Ecommerce without the store.
-            </h3>
-            <p className="mt-6 text-sm leading-relaxed text-black/75 max-w-sm">
-              If you want a store, use a store tool. If you just need somewhere
-              to sell one thing — this is lighter, faster, and clearer.
-            </p>
-          </motion.div>
-
-          <motion.div variants={v.item} className="md:col-span-8">
-            <div className="border border-black">
-              <div className="p-6 md:p-8">
-                <div className="grid grid-cols-12 gap-6 text-sm">
-                  <div className="col-span-12 md:col-span-4">
-                    <div className="text-xs uppercase tracking-[0.18em] text-black/60">
-                      ShopABlock
-                    </div>
-                    <ul className="mt-4 space-y-2 text-black/80">
-                      <li>• One page per product</li>
-                      <li>• One CTA: Buy now</li>
-                      <li>• No themes or setup</li>
-                      <li>• Built to share</li>
-                    </ul>
-                  </div>
-
-                  <div className="col-span-12 md:col-span-4">
-                    <div className="text-xs uppercase tracking-[0.18em] text-black/60">
-                      Shopify
-                    </div>
-                    <ul className="mt-4 space-y-2 text-black/80">
-                      <li>• Store + catalog</li>
-                      <li>• Theme choices</li>
-                      <li>• App/plugin stack</li>
-                      <li>• More surface area</li>
-                    </ul>
-                  </div>
-
-                  <div className="col-span-12 md:col-span-4">
-                    <div className="text-xs uppercase tracking-[0.18em] text-black/60">
-                      Gumroad
-                    </div>
-                    <ul className="mt-4 space-y-2 text-black/80">
-                      <li>• Marketplace feel</li>
-                      <li>• Page is templated</li>
-                      <li>• Less “brand page”</li>
-                      <li>• Great for some cases</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-black p-6 md:p-7 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                <div className="text-xs uppercase tracking-[0.18em] text-black/60">
-                  Rule
-                </div>
-                <div className="text-sm">
-                  If it starts to feel like ecommerce software, we failed.
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </Section>
 
       {/* FAQ */}
       <FAQs />

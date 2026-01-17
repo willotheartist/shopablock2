@@ -1,8 +1,14 @@
 // src/components/home/faqs.tsx
 "use client";
 
-import { motion } from "framer-motion";
-import { useMemo } from "react";
+import { Anonymous_Pro } from "next/font/google";
+import { AnimatePresence, motion } from "framer-motion";
+import { useMemo, useState } from "react";
+
+const anonymous = Anonymous_Pro({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -15,6 +21,61 @@ export type FAQItem = {
   a: React.ReactNode;
 };
 
+function PlusMinus({ open }: { open: boolean }) {
+  return (
+    <motion.span
+      aria-hidden
+      className={cx(
+        "grid place-items-center",
+        "h-12 w-12 md:h-13 md:w-13 rounded-full",
+        open ? "bg-black text-[rgb(246,245,241)]" : "bg-black text-[rgb(246,245,241)]"
+      )}
+      initial={false}
+      animate={{ scale: open ? 1.02 : 1 }}
+      transition={{ duration: 0.25, ease }}
+    >
+      <motion.span
+        className={cx(anonymous.className, "text-xl leading-none")}
+        initial={false}
+        animate={{ rotate: open ? 0 : 0 }}
+        transition={{ duration: 0.25, ease }}
+      >
+        {open ? "–" : "+"}
+      </motion.span>
+    </motion.span>
+  );
+}
+
+function Answer({ children }: { children: React.ReactNode }) {
+  return (
+    <AnimatePresence initial={false}>
+      <motion.div
+        key="a"
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: "auto", opacity: 1 }}
+        exit={{ height: 0, opacity: 0 }}
+        transition={{
+          height: { duration: 0.45, ease },
+          opacity: { duration: 0.25, ease },
+        }}
+        className="overflow-hidden"
+      >
+        <motion.div
+          initial={{ y: -6 }}
+          animate={{ y: 0 }}
+          exit={{ y: -6 }}
+          transition={{ duration: 0.35, ease }}
+          className="pb-8 md:pb-10 pr-0 md:pr-16"
+        >
+          <div className="mt-4 text-sm md:text-[15px] leading-relaxed text-black/55 max-w-3xl">
+            {children}
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 export default function FAQs({
   items,
   compact = false,
@@ -26,15 +87,17 @@ export default function FAQs({
     () => ({
       wrap: {
         hidden: {},
-        show: { transition: { staggerChildren: 0.08, delayChildren: 0.02 } },
+        show: {
+          transition: { staggerChildren: 0.12, delayChildren: 0.04 },
+        },
       },
       item: {
-        hidden: { opacity: 0, y: 12 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
+        hidden: { opacity: 0, y: 18 },
+        show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
       },
-      line: {
-        hidden: { scaleX: 0, opacity: 0.6 },
-        show: { scaleX: 1, opacity: 1, transition: { duration: 0.8, ease } },
+      row: {
+        hidden: { opacity: 0, y: 10 },
+        show: { opacity: 1, y: 0, transition: { duration: 0.65, ease } },
       },
     }),
     []
@@ -157,6 +220,7 @@ export default function FAQs({
   );
 
   const data = items ?? defaultItems;
+  const [open, setOpen] = useState<number | null>(0);
 
   return (
     <motion.section
@@ -170,82 +234,64 @@ export default function FAQs({
         "border-b border-black"
       )}
     >
-      <div className="max-w-350 mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
-        {/* Left label */}
-        <motion.div variants={v.item} className="md:col-span-4">
-          <div className="text-xs uppercase tracking-[0.18em] text-black/70">
-            FAQ
-          </div>
-          <h3 className="mt-5 text-2xl tracking-tight font-normal">
-            Clear answers.
-            <br />
-            No pitch.
-          </h3>
-
-          <div className="mt-6 text-sm leading-relaxed text-black/75 max-w-sm">
-            Payments are handled via{" "}
-            <span className="font-medium">KompiPay</span>, powered by{" "}
-            <span className="font-medium">Stripe Express</span>. Funds go directly to
-            sellers.
-          </div>
-        </motion.div>
-
-        {/* Right accordion */}
-        <motion.div
-          variants={v.item}
-          className="md:col-span-8 border border-black"
-        >
-          {/* Header row */}
-          <div className="px-6 md:px-8 py-5 flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-black/60 border-b border-black">
-            <span>Questions</span>
-            <span>Answers</span>
+      <div className="max-w-350 mx-auto">
+        <motion.div variants={v.item} className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
+          <div className="md:col-span-4">
+            <div className={cx(anonymous.className, "text-[44px] md:text-[56px] leading-[0.98] tracking-tight")}>
+              Questions?
+            </div>
+            <div className="mt-6 text-sm leading-relaxed text-black/60 max-w-sm">
+              Payments run via <span className="font-medium">KompiPay</span> +{" "}
+              <span className="font-medium">Stripe Express</span>. Funds go directly to sellers.
+            </div>
           </div>
 
-          <div className="divide-y divide-black">
-            {data.map((it) => (
-              <details key={it.q} className="group">
-                <summary
-                  className={cx(
-                    "cursor-pointer list-none",
-                    "px-6 md:px-8 py-6",
-                    "flex items-start justify-between gap-6"
-                  )}
-                >
-                  <span className="text-sm leading-relaxed">{it.q}</span>
-                  <span
-                    className={cx(
-                      "shrink-0 text-xs uppercase tracking-[0.18em]",
-                      "text-black/60 group-open:text-black"
-                    )}
-                    aria-hidden
+          <div className="md:col-span-8">
+            <div className="border-t border-black/15">
+              {data.map((it, idx) => {
+                const isOpen = open === idx;
+                const id = `faq-${idx}`;
+                return (
+                  <motion.div
+                    key={it.q}
+                    variants={v.row}
+                    className="border-b border-black/15"
                   >
-                    {/** keep it extremely minimal, matches your L&F */}
-                    +
-                  </span>
-                </summary>
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      aria-controls={id}
+                      onClick={() => setOpen(isOpen ? null : idx)}
+                      className={cx(
+                        "w-full text-left",
+                        "py-10 md:py-12",
+                        "flex items-center justify-between gap-8",
+                        "focus:outline-none"
+                      )}
+                    >
+                      <div className="min-w-0">
+                        <div className="text-[22px] md:text-[26px] leading-[1.2] tracking-tight text-black">
+                          {it.q}
+                        </div>
+                      </div>
 
-                <div className="px-6 md:px-8 pb-6 -mt-2">
-                  <div className="text-sm leading-relaxed text-black/80 max-w-2xl">
-                    {it.a}
-                  </div>
-                </div>
-              </details>
-            ))}
+                      <div className="shrink-0">
+                        <PlusMinus open={isOpen} />
+                      </div>
+                    </button>
+
+                    <div id={id} className="pl-0">
+                      {isOpen ? <Answer>{it.a}</Answer> : null}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            <motion.div variants={v.item} className="mt-10 text-[11px] uppercase tracking-[0.18em] text-black/45">
+              Still unsure? Build a block and test it — you can publish in minutes.
+            </motion.div>
           </div>
-
-          {/* Footer strip */}
-          <motion.div
-            variants={v.item}
-            className="border-t border-black px-6 md:px-8 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3"
-          >
-            <div className="text-xs uppercase tracking-[0.18em] text-black/60">
-              Trust
-            </div>
-            <div className="text-sm text-black/80">
-              Checkout uses Stripe infrastructure via KompiPay — receipts, disputes, and
-              payout onboarding included.
-            </div>
-          </motion.div>
         </motion.div>
       </div>
     </motion.section>

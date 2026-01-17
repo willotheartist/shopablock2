@@ -2,6 +2,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 
 export const metadata: Metadata = {
   title: "Shopablock",
@@ -15,9 +16,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-[rgb(246,245,241)] text-black">
         <SiteHeader />
         {children}
+        <SiteFooter />
       </body>
     </html>
   );

@@ -1,4 +1,3 @@
-// src/components/SiteHeaderClient.tsx
 "use client";
 
 import Link from "next/link";
@@ -8,13 +7,13 @@ import { usePathname } from "next/navigation";
 
 type NavItem = { href: string; label: string };
 
-const NAV_PUBLIC_LEFT: NavItem[] = [
+const NAV_PUBLIC: NavItem[] = [
   { href: "/explore", label: "Explore" },
   { href: "/pricing", label: "Pricing" },
   { href: "/demo", label: "Demo" },
 ];
 
-const NAV_AUTHED_LEFT: NavItem[] = [
+const NAV_AUTHED: NavItem[] = [
   { href: "/explore", label: "Explore" },
   { href: "/pricing", label: "Pricing" },
   { href: "/app", label: "Dashboard" },
@@ -24,54 +23,32 @@ function cx(...v: Array<string | false | null | undefined>) {
   return v.filter(Boolean).join(" ");
 }
 
-function Marquee() {
-  // “Webflow-ish” thin bar with repeating copy
-  const chunk = (
-    <span className="inline-flex items-center gap-3 px-6">
-      <span className="font-semibold">ShopABlock</span>
-      <span className="opacity-80">Buy one block. Sell one thing. Get paid instantly.</span>
-      <span aria-hidden className="opacity-70">
-        ☺
-      </span>
-    </span>
-  );
-
+function IconMenu({ className = "" }: { className?: string }) {
   return (
-    <div className="w-full border-b border-black bg-black/6 text-black">
-      <div className="overflow-hidden">
-        <div className="marquee flex whitespace-nowrap py-2 text-xs tracking-wide">
-          {chunk}
-          {chunk}
-          {chunk}
-          {chunk}
-          {chunk}
-          {chunk}
-        </div>
-      </div>
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
+      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
 
-      <style jsx>{`
-        .marquee {
-          will-change: transform;
-          animation: marquee 18s linear infinite;
-        }
-        .marquee:hover {
-          animation-play-state: paused;
-        }
-        @keyframes marquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .marquee {
-            animation: none;
-          }
-        }
-      `}</style>
-    </div>
+function IconX({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
+      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconSearch({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
+      <path
+        d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <path d="M16.5 16.5 21 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
   );
 }
 
@@ -79,10 +56,12 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+  const items = useMemo(() => (authed ? NAV_AUTHED : NAV_PUBLIC), [authed]);
 
+  // Close menu on route change
+  useEffect(() => setOpen(false), [pathname]);
+
+  // Escape to close
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
@@ -91,189 +70,183 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  const leftItems = useMemo(
-    () => (authed ? NAV_AUTHED_LEFT : NAV_PUBLIC_LEFT),
-    [authed]
-  );
-
-  const linkBase =
-    "px-4 py-2 text-xs uppercase tracking-[0.18em] transition-colors border border-black/0";
-  const linkHover = "hover:bg-black hover:text-[rgb(246,245,241)] hover:border-black";
-  const linkActive = "bg-black text-[rgb(246,245,241)] border-black";
-
-  const buttonBase =
-    "px-4 py-2 text-xs uppercase tracking-[0.18em] transition-colors border border-black";
+  // Body scroll lock when modal open
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   return (
-    <header className="w-full bg-[rgb(246,245,241)] text-black">
-      <Marquee />
+    <>
+      {/* GUFRAM-ish header */}
+      <header className="fixed inset-x-0 top-0 z-50">
+        <div className="mx-auto max-w-6xl px-4 pt-4">
+          <div className="border border-black bg-white">
+            <div className="grid grid-cols-3 items-center px-4 py-3">
+              {/* Left: burger */}
+              <button
+                type="button"
+                onClick={() => setOpen(true)}
+                aria-label="Open menu"
+                aria-expanded={open}
+                className="justify-self-start p-2 -m-2 hover:opacity-70 transition-opacity"
+              >
+                <IconMenu className="h-6 w-6" />
+              </button>
 
-      {/* Main bar - FULL WIDTH */}
-      <div className="w-full border-b border-black">
-        <div className="w-full px-6 py-5 flex items-center justify-between gap-6">
-          {/* Left cluster: logo + desktop nav */}
-          <div className="flex items-center gap-6">
-            <Link href="/" aria-label="Home" className="shrink-0">
-              <Image
-                src="/blocklogo.png"
-                alt="ShopABlock"
-                width={160}
-                height={80}
-                priority
-                className="h-10 md:h-12 w-auto"
-              />
-            </Link>
+              {/* Center: logo */}
+              <Link href="/" aria-label="Home" className="justify-self-center">
+                {/* If you want pure text like gufram, replace Image with <span className="text-2xl font-black">shopablock</span> */}
+                <Image
+                  src="/blocklogo.png"
+                  alt="ShopABlock"
+                  width={150}
+                  height={40}
+                  priority
+                  className="h-8 w-auto"
+                />
+              </Link>
 
-            <nav className="hidden md:flex items-center gap-1">
-              {leftItems.map((it) => {
-                const active = pathname === it.href;
-                return (
-                  <Link
-                    key={it.href}
-                    href={it.href}
-                    className={cx(linkBase, linkHover, active && linkActive)}
-                  >
-                    {it.label}
-                  </Link>
-                );
-              })}
-            </nav>
+              {/* Right: search (placeholder) */}
+              <button
+                type="button"
+                aria-label="Search"
+                onClick={() => setOpen(true)} // optional: open same menu, or wire to search later
+                className="justify-self-end p-2 -m-2 hover:opacity-70 transition-opacity"
+              >
+                <IconSearch className="h-6 w-6" />
+              </button>
+            </div>
           </div>
+        </div>
+      </header>
 
-          {/* Right cluster: auth actions */}
-          <div className="hidden md:flex items-center gap-3">
-            {authed ? (
-              <>
-                <Link
-                  href="/app/new"
-                  className={cx(
-                    buttonBase,
-                    "bg-black text-[rgb(246,245,241)] hover:opacity-90"
-                  )}
-                >
-                  New block
-                </Link>
-
-                <form action="/api/auth/sign-out" method="post">
-                  <button
-                    type="submit"
-                    className={cx(
-                      buttonBase,
-                      "bg-transparent hover:bg-black hover:text-[rgb(246,245,241)]"
-                    )}
-                  >
-                    Sign out
-                  </button>
-                </form>
-              </>
-            ) : (
-              <>
-                <Link href="/sign-in" className={cx(linkBase, linkHover, pathname === "/sign-in" && linkActive)}>
-                  Log in
-                </Link>
-
-                <Link href="/sign-up" className={cx(linkBase, linkHover, pathname === "/sign-up" && linkActive)}>
-                  Sign up
-                </Link>
-
-                <Link
-                  href="/pricing"
-                  className={cx(
-                    buttonBase,
-                    "bg-black text-[rgb(246,245,241)] hover:opacity-90"
-                  )}
-                >
-                  Buy a block
-                </Link>
-              </>
-            )}
-          </div>
-
-          {/* Mobile menu button */}
+      {/* Modal overlay + blurred page */}
+      {open ? (
+        <div className="fixed inset-0 z-60">
+          {/* Backdrop (blur + dim) */}
           <button
             type="button"
-            aria-label="Open menu"
-            aria-expanded={open}
-            onClick={() => setOpen((s) => !s)}
+            aria-label="Close menu"
+            onClick={() => setOpen(false)}
             className={cx(
-              "md:hidden text-xs uppercase tracking-[0.18em]",
-              "px-4 py-2 border border-black",
-              "hover:bg-black hover:text-[rgb(246,245,241)]"
+              "absolute inset-0",
+              "bg-black/25",
+              "backdrop-blur-md"
             )}
-          >
-            {open ? "Close" : "Menu"}
-          </button>
-        </div>
-      </div>
+          />
 
-      {/* Mobile drawer */}
-      {open ? (
-        <div className="md:hidden border-b border-black bg-[rgb(246,245,241)]">
-          <div className="px-6 py-4 grid gap-2">
-            {leftItems.map((it) => {
-              const active = pathname === it.href;
-              return (
-                <Link
-                  key={it.href}
-                  href={it.href}
-                  className={cx(
-                    "px-4 py-3 border border-black text-xs uppercase tracking-[0.18em]",
-                    "hover:bg-black hover:text-[rgb(246,245,241)]",
-                    active && "bg-black text-[rgb(246,245,241)]"
+          {/* Center panel */}
+          <div className="absolute inset-0 flex items-start justify-center pt-24 px-4">
+            <div className="w-full max-w-xl border border-black bg-white shadow-sm">
+              {/* Panel top bar */}
+              <div className="grid grid-cols-3 items-center px-4 py-3 border-b border-black">
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close menu"
+                  className="justify-self-start p-2 -m-2 hover:opacity-70 transition-opacity"
+                >
+                  <IconX className="h-6 w-6" />
+                </button>
+
+                <div className="justify-self-center">
+                  <span className="text-xl font-black tracking-tight">shopablock</span>
+                </div>
+
+                <button
+                  type="button"
+                  aria-label="Search"
+                  className="justify-self-end p-2 -m-2 hover:opacity-70 transition-opacity"
+                  onClick={() => {
+                    // wire search later
+                  }}
+                >
+                  <IconSearch className="h-6 w-6" />
+                </button>
+              </div>
+
+              {/* Big nav */}
+              <nav className="px-6 py-10">
+                <div className="grid gap-3 text-center">
+                  {items.map((it) => (
+                    <Link
+                      key={it.href}
+                      href={it.href}
+                      className={cx(
+                        "text-4xl sm:text-5xl font-black leading-none",
+                        "hover:opacity-70 transition-opacity"
+                      )}
+                    >
+                      {it.label.toUpperCase()}
+                    </Link>
+                  ))}
+                  {!authed ? (
+                    <>
+                      <Link
+                        href="/sign-in"
+                        className="text-4xl sm:text-5xl font-black leading-none hover:opacity-70 transition-opacity"
+                      >
+                        LOG IN
+                      </Link>
+                      <Link
+                        href="/sign-up"
+                        className="text-4xl sm:text-5xl font-black leading-none hover:opacity-70 transition-opacity"
+                      >
+                        SIGN UP
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        href="/app/new"
+                        className="text-4xl sm:text-5xl font-black leading-none hover:opacity-70 transition-opacity"
+                      >
+                        NEW BLOCK
+                      </Link>
+                    </>
                   )}
-                >
-                  {it.label}
-                </Link>
-              );
-            })}
+                </div>
+              </nav>
 
-            <div className="h-2" />
-
-            {authed ? (
-              <>
-                <Link
-                  href="/app/new"
-                  className="px-4 py-3 border border-black text-xs uppercase tracking-[0.18em] bg-black text-[rgb(246,245,241)] hover:opacity-90"
-                >
-                  New block
-                </Link>
-
-                <form action="/api/auth/sign-out" method="post">
-                  <button
-                    type="submit"
-                    className="w-full text-left px-4 py-3 border border-black text-xs uppercase tracking-[0.18em] hover:bg-black hover:text-[rgb(246,245,241)]"
-                  >
-                    Sign out
-                  </button>
-                </form>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/sign-in"
-                  className="px-4 py-3 border border-black text-xs uppercase tracking-[0.18em] hover:bg-black hover:text-[rgb(246,245,241)]"
-                >
-                  Log in
-                </Link>
-
-                <Link
-                  href="/sign-up"
-                  className="px-4 py-3 border border-black text-xs uppercase tracking-[0.18em] hover:bg-black hover:text-[rgb(246,245,241)]"
-                >
-                  Sign up
-                </Link>
-
+              {/* Bottom actions (optional, gufram-ish utility strip) */}
+              <div className="border-t border-black grid grid-cols-2">
                 <Link
                   href="/pricing"
-                  className="px-4 py-3 border border-black text-xs uppercase tracking-[0.18em] bg-black text-[rgb(246,245,241)] hover:opacity-90"
+                  className="px-4 py-4 text-center text-sm font-semibold hover:bg-black hover:text-white transition-colors border-r border-black"
                 >
-                  Buy a block
+                  PRICING
                 </Link>
-              </>
-            )}
+
+                {authed ? (
+                  <form action="/api/auth/sign-out" method="post" className="contents">
+                    <button
+                      type="submit"
+                      className="px-4 py-4 text-center text-sm font-semibold hover:bg-black hover:text-white transition-colors"
+                    >
+                      SIGN OUT
+                    </button>
+                  </form>
+                ) : (
+                  <Link
+                    href="/pricing"
+                    className="px-4 py-4 text-center text-sm font-semibold hover:bg-black hover:text-white transition-colors"
+                  >
+                    BUY A BLOCK
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       ) : null}
-    </header>
+
+      {/* Spacer so content doesn't hide under fixed header */}
+      <div className="h-20" />
+    </>
   );
 }
