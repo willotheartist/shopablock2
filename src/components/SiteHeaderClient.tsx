@@ -77,22 +77,29 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  // Keep a ref in sync so effects can read the latest open state
+  const openRef = useRef(open);
+  useEffect(() => {
+    openRef.current = open;
+  }, [open]);
+
   const items = useMemo(() => (authed ? NAV_AUTHED : NAV_PUBLIC), [authed]);
 
-  // Ignore the first pathname effect run (hydration can cause a change)
+  // Close menu on route change ONLY (not on open/close)
   const didInitPathRef = useRef(false);
-
-  // Close menu on route change (but not immediately on hydration)
   useEffect(() => {
+    // Ignore first run (hydration)
     if (!didInitPathRef.current) {
       didInitPathRef.current = true;
       return;
     }
-    if (!open) return;
+
+    // Only close if currently open
+    if (!openRef.current) return;
 
     const id = window.requestAnimationFrame(() => setOpen(false));
     return () => window.cancelAnimationFrame(id);
-  }, [pathname, open]);
+  }, [pathname]);
 
   // Escape to close
   useEffect(() => {
@@ -116,7 +123,6 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-50">
-        {/* MARQUEE STRIP */}
         {SHOW_ANNOUNCEMENT ? (
           <div className="h-9 bg-[#131313] text-white border-b border-white/10 overflow-hidden">
             <div className="h-9 flex items-center">
@@ -134,7 +140,6 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
                         </span>
                       ))}
                     </div>
-
                     <div className="sb-marquee__track" aria-hidden="true">
                       {MARQUEE_ITEMS.map((t, i) => (
                         <span key={`b-${i}`} className="sb-marquee__item">
@@ -322,9 +327,7 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
                 </button>
 
                 <div className="justify-self-center">
-                  <span className="text-xl font-black tracking-tight">
-                    shopablock
-                  </span>
+                  <span className="text-xl font-black tracking-tight">shopablock</span>
                 </div>
 
                 <div className="justify-self-end w-10" aria-hidden />
