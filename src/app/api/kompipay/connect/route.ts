@@ -8,61 +8,72 @@ import {
 } from "@/lib/kompipay";
 import { PayoutsStatus } from "@prisma/client";
 
-function getOriginFromBody(body: unknown): string | null {
-  if (!body || typeof body !== "object") return null;
-  const origin = (body as Record<string, unknown>).origin;
-  return typeof origin === "string" ? origin : null;
+type Body = {
+  origin?: unknown;
+};
+
+function getOrigin(body: Body, req: Request) {
+  if (typeof body.origin === "string" && body.origin.trim()) return body.origin.trim();
+  const envOrigin = process.env.NEXT_PUBLIC_APP_ORIGIN;
+  if (envOrigin && envOrigin.trim()) return envOrigin.trim();
+  const hdrOrigin = req.headers.get("origin");
+  if (hdrOrigin && hdrOrigin.trim()) return hdrOrigin.trim();
+  return null;
+}
+
+function errJson(message: string, status: number) {
+  return NextResponse.json({ error: message }, { status });
 }
 
 export async function POST(req: Request) {
-  const user = await getSessionUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  let body: unknown = null;
   try {
-    body = await req.json();
-  } catch {
-    body = null;
-  }
+    const user = await getSessionUser();
+    if (!user) return errJson("Unauthorized", 401);
 
-  const origin = getOriginFromBody(body) ?? process.env.NEXT_PUBLIC_APP_ORIGIN;
-  if (!origin) {
-    return NextResponse.json({ error: "Missing origin" }, { status: 400 });
-  }
+    const body = (await req.json().catch(() => ({}))) as Body;
+    const origin = getOrigin(body, req);
+    if (!origin) return errJson("Missing origin", 400);
 
-  const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-  if (!dbUser) return NextResponse.json({ error: "User not found" }, { status: 404 });
+    const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
+    if (!dbUser) return errJson("User not found", 404);
 
-  let kompipayAccountId = dbUser.kompipayAccountId;
-  let stripeConnectedAccountId = dbUser.stripeConnectedAccountId ?? undefined;
+    let kompipayAccountId = dbUser.kompipayAccountId;
+    let stripeConnectedAccountId = dbUser.stripeConnectedAccountId ?? undefined;
 
-  if (!kompipayAccountId) {
-    const created = await kompipayCreateSellerAccount({
-      referenceId: dbUser.id,
-      email: dbUser.email,
+    if (!kompipayAccountId) {
+      const created = await kompipayCreateSellerAccount({
+        referenceId: dbUser.id,
+        email: dbUser.email,
+      });
+
+      kompipayAccountId = created.kompipayAccountId;
+      stripeConnectedAccountId = created.stripeConnectedAccountId;
+
+      await prisma.user.update({
+        where: { id: dbUser.id },
+        data: {
+          kompipayAccountId,
+          stripeConnectedAccountId: stripeConnectedAccountId ?? null,
+          payoutsStatus: PayoutsStatus.pending,
+        },
+      });
+    }
+
+    const returnUrl = `${origin}/app/settings?kp=return`;
+    const refreshUrl = `${origin}/app/settings?kp=refresh`;
+
+    const link = await kompipayCreateOnboardingLink({
+      kompipayAccountId,
+      returnUrl,
+      refreshUrl,
     });
 
-    kompipayAccountId = created.kompipayAccountId;
-    stripeConnectedAccountId = created.stripeConnectedAccountId;
+    if (!link?.url) return errJson("KompiPay did not return an onboarding URL", 502);
 
-    await prisma.user.update({
-      where: { id: dbUser.id },
-      data: {
-        kompipayAccountId,
-        stripeConnectedAccountId: stripeConnectedAccountId ?? null,
-        payoutsStatus: PayoutsStatus.pending,
-      },
-    });
+    return NextResponse.json({ url: link.url });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : "Unknown server error";
+    // Always return JSON so the client can show it.
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
-
-  const returnUrl = `${origin}/app/settings?kp=return`;
-  const refreshUrl = `${origin}/app/settings?kp=refresh`;
-
-  const link = await kompipayCreateOnboardingLink({
-    kompipayAccountId,
-    returnUrl,
-    refreshUrl,
-  });
-
-  return NextResponse.json({ url: link.url });
 }

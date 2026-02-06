@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 type NavItem = { href: string; label: string };
@@ -79,9 +79,17 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
 
   const items = useMemo(() => (authed ? NAV_AUTHED : NAV_PUBLIC), [authed]);
 
-  // Close menu on route change (avoid sync setState directly in effect body)
+  // Ignore the first pathname effect run (hydration can cause a change)
+  const didInitPathRef = useRef(false);
+
+  // Close menu on route change (but not immediately on hydration)
   useEffect(() => {
+    if (!didInitPathRef.current) {
+      didInitPathRef.current = true;
+      return;
+    }
     if (!open) return;
+
     const id = window.requestAnimationFrame(() => setOpen(false));
     return () => window.cancelAnimationFrame(id);
   }, [pathname, open]);
@@ -113,13 +121,11 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
           <div className="h-9 bg-[#131313] text-white border-b border-white/10 overflow-hidden">
             <div className="h-9 flex items-center">
               <div className="relative w-full">
-                {/* edge fades */}
                 <div className="pointer-events-none absolute left-0 top-0 h-full w-12 bg-linear-to-r from-[#131313] to-transparent" />
                 <div className="pointer-events-none absolute right-0 top-0 h-full w-12 bg-linear-to-l from-[#131313] to-transparent" />
 
                 <div className="sb-marquee">
                   <div className="sb-marquee__inner">
-                    {/* Track A */}
                     <div className="sb-marquee__track">
                       {MARQUEE_ITEMS.map((t, i) => (
                         <span key={`a-${i}`} className="sb-marquee__item">
@@ -129,7 +135,6 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
                       ))}
                     </div>
 
-                    {/* Track B (duplicate) */}
                     <div className="sb-marquee__track" aria-hidden="true">
                       {MARQUEE_ITEMS.map((t, i) => (
                         <span key={`b-${i}`} className="sb-marquee__item">
@@ -192,10 +197,8 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
           </div>
         ) : null}
 
-        {/* MAIN HEADER */}
         <div className="bg-white border-b border-black/10">
           <div className="mx-auto max-w-7xl px-6 h-18 flex items-center gap-5">
-            {/* Left */}
             <div className="flex items-center gap-4">
               <button
                 type="button"
@@ -219,7 +222,6 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
               </Link>
             </div>
 
-            {/* Nav */}
             <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
               {items.map((it) => (
                 <Link
@@ -236,7 +238,6 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
               ))}
             </nav>
 
-            {/* Search */}
             <div className="hidden lg:flex flex-1">
               <label className="relative w-full max-w-xl">
                 <IconSearch className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-black/40" />
@@ -248,7 +249,6 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
               </label>
             </div>
 
-            {/* Right */}
             <div className="ml-auto flex items-center gap-3">
               <button
                 type="button"
@@ -300,7 +300,6 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
         </div>
       </header>
 
-      {/* MENU OVERLAY — unchanged */}
       {open ? (
         <div className="fixed inset-0 z-60">
           <button
@@ -378,11 +377,7 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
                 </Link>
 
                 {authed ? (
-                  <form
-                    action="/api/auth/sign-out"
-                    method="post"
-                    className="contents"
-                  >
+                  <form action="/api/auth/sign-out" method="post" className="contents">
                     <button
                       type="submit"
                       className="px-4 py-4 text-center text-sm font-semibold hover:bg-black hover:text-white transition-colors"
@@ -404,7 +399,6 @@ export default function SiteHeaderClient({ authed }: { authed: boolean }) {
         </div>
       ) : null}
 
-      {/* Spacer: marquee (36px) + header (72px) = 108px */}
       <div className={SHOW_ANNOUNCEMENT ? "h-27" : "h-18"} />
     </>
   );
