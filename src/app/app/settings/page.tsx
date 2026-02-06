@@ -21,10 +21,10 @@ export default async function SettingsPage() {
     status === "active"
       ? "Connected"
       : status === "pending"
-      ? "Pending"
-      : status === "restricted"
-      ? "Restricted"
-      : "Not connected";
+        ? "Pending"
+        : status === "restricted"
+          ? "Restricted"
+          : "Not connected";
 
   return (
     <Container narrow>
@@ -46,7 +46,8 @@ export default async function SettingsPage() {
                 <div>{statusLabel}</div>
               </div>
 
-              {status !== "active" ? <PayoutsConnectButton /> : null}
+              {/* KompiPay v1: Onboarding is handled in KompiPay dashboard (merchant UI), not via partner API */}
+              <PayoutsConnectButton />
             </div>
           </div>
         </Panel>
