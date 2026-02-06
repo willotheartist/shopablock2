@@ -1,8 +1,8 @@
-// src/components/home/aha.tsx
+//·src/components/home/aha.tsx
 "use client";
 
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { useMemo, useRef } from "react";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -24,10 +24,10 @@ function useReveal() {
 }
 
 type ValueCard = {
-  id: string; // "01"
+  id: string;
   title: string;
   body: string;
-  image: string; // /public/shopablocks/*
+  image: string;
   alt: string;
 };
 
@@ -81,9 +81,8 @@ function StaggerCard({
 }: {
   c: ValueCard;
   i: number;
-  progress: any; // MotionValue<number>
+  progress: MotionValue<number>;
 }) {
-  // Heavier stagger: each card has its own scroll window and travels more.
   const start = 0.08 + i * 0.14;
   const end = start + 0.5;
 
@@ -92,9 +91,14 @@ function StaggerCard({
   const opacity = useTransform(local, [0, 0.55, 1], [0, 0.9, 1]);
   const scale = useTransform(local, [0, 1], [0.96, 1]);
 
-  // tiny extra drift so each card feels independently timed
   const y2 = useTransform(local, [0, 1], [14 - i * 2, 0]);
-  const finalY = useTransform([y, y2] as any, ([a, b]: number[]) => a + b);
+
+  // ✅ Framer callback args are unknown[], so coerce safely.
+  const finalY = useTransform([y, y2], (vals) => {
+    const a = Number(vals[0] ?? 0);
+    const b = Number(vals[1] ?? 0);
+    return a + b;
+  });
 
   return (
     <motion.div style={{ y: finalY, opacity, scale }} className="relative">
@@ -104,7 +108,7 @@ function StaggerCard({
           "w-65 sm:w-75 md:w-[320px]",
           "rounded-[26px] md:rounded-[30px]",
           "bg-[rgb(246,245,241)]",
-          "ring-1 ring-black/10", // ✅ clean outline, no shadow
+          "ring-1 ring-black/10",
           "overflow-hidden",
         ].join(" ")}
       >
@@ -117,7 +121,6 @@ function StaggerCard({
           </div>
         </div>
 
-        {/* Media: no box, no border, clean for transparent PNGs */}
         <div className="px-7 mt-5 md:px-8">
           <div className="relative aspect-16/10">
             <Image
@@ -148,7 +151,6 @@ export default function AhaSection() {
   const v = useReveal();
   const railRef = useRef<HTMLDivElement | null>(null);
 
-  // Use scroll progress across the whole section to drive a heavy stagger
   const { scrollYProgress } = useScroll({
     target: railRef,
     offset: ["start 0.9", "end 0.2"],
@@ -174,7 +176,6 @@ export default function AhaSection() {
           </h2>
         </motion.div>
 
-        {/* Rail (no pill, no drag UI). Still scrollable horizontally. */}
         <motion.div variants={v.item} className="mt-12">
           <div
             ref={railRef}

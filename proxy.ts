@@ -1,7 +1,10 @@
-// proxy.ts
+//·proxy.ts
 import { NextResponse, type NextRequest } from "next/server";
 
-export default function middleware(_req: NextRequest) {
+export default function middleware(req: NextRequest) {
+  // Touch req so eslint doesn't flag it as unused.
+  // This keeps behavior identical: always allow the request through.
+  void req;
   return NextResponse.next();
 }
 

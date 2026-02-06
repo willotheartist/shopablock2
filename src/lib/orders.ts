@@ -1,5 +1,6 @@
+//·src/lib/orders.ts
 import { prisma } from "@/lib/db";
-import { OrderStatus, BlockStatus } from "@prisma/client";
+import { OrderStatus, BlockStatus, PayoutsStatus } from "@prisma/client";
 
 export async function createOrder(input: {
   blockId: string;
@@ -8,11 +9,19 @@ export async function createOrder(input: {
 }) {
   const block = await prisma.block.findUnique({
     where: { id: input.blockId },
+    include: { owner: true },
   });
 
   if (!block) throw new Error("Block not found");
-  if (block.status !== BlockStatus.active) {
-    throw new Error("Block not available");
+  if (block.status !== BlockStatus.active) throw new Error("Block not available");
+
+  if (block.owner.payoutsStatus !== PayoutsStatus.active) {
+    throw new Error("Seller payouts not connected");
+  }
+
+  // ✅ naming: kompipayAccountId
+  if (!block.owner.kompipayAccountId) {
+    throw new Error("Seller payouts not connected");
   }
 
   return prisma.order.create({
@@ -30,10 +39,7 @@ export async function createOrder(input: {
 export async function getOrder(id: string) {
   return prisma.order.findUnique({
     where: { id },
-    include: {
-      block: true,
-      seller: true,
-    },
+    include: { block: true, seller: true },
   });
 }
 

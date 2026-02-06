@@ -1,4 +1,5 @@
-// src/app/app/orders/[id]/page.tsx
+//·src/app/app/orders/[id]/page.tsx
+import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { Container, Panel, Kicker, Button } from "@/components/ui";
 import { prisma } from "@/lib/db";
@@ -57,9 +58,9 @@ export default async function OrderPage({
             </div>
           </div>
 
-          <a href="/app/orders">
+          <Link href="/app/orders">
             <Button variant="outline">Back</Button>
-          </a>
+          </Link>
         </div>
 
         <Panel>

@@ -1,8 +1,8 @@
-// src/components/home/stacks.tsx
+//·src/components/home/stacks.tsx
 "use client";
 
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { useMemo, useRef } from "react";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -38,11 +38,11 @@ function K({ children }: { children: React.ReactNode }) {
 
 type StackCard = {
   eyebrow: string;
-  headline: string; // allow \n
-  body: string; // allow \n
+  headline: string;
+  body: string;
   bullets?: string[];
   punch?: string;
-  image: string; // from /public/shopablocks/
+  image: string;
   alt: string;
 };
 
@@ -65,13 +65,11 @@ function StackCardView({
 }: {
   c: StackCard;
   index: number;
-  progress: any; // MotionValue<number>
+  progress: MotionValue<number>;
 }) {
-  // calm stack motion (no shadows, no fade)
   const scale = useTransform(progress, [0, 1], [1, 0.975]);
   const y = useTransform(progress, [0, 1], [0, -12]);
 
-  // later cards in front
   const z = 10 + index;
 
   return (
@@ -86,7 +84,6 @@ function StackCardView({
           "ring-1 ring-black/6",
         ].join(" ")}
       >
-        {/* subtle wash */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
@@ -97,7 +94,6 @@ function StackCardView({
         />
 
         <div className="relative grid grid-cols-1 md:grid-cols-12">
-          {/* Copy */}
           <div className="px-7 pt-8 pb-7 md:px-8 md:pt-9 md:pb-8 md:col-span-5 border-b md:border-b-0 md:border-r border-black/10">
             <K>{c.eyebrow}</K>
 
@@ -126,7 +122,6 @@ function StackCardView({
             ) : null}
           </div>
 
-          {/* Media (no border, no box — transparent PNGs will float cleanly) */}
           <div className="px-7 pt-8 pb-7 md:px-8 md:pt-9 md:pb-8 md:col-span-7 flex items-center justify-center">
             <div className="relative w-full max-w-140">
               <div className="relative aspect-16/10">
@@ -143,7 +138,6 @@ function StackCardView({
           </div>
         </div>
 
-        {/* Bottom rail (subtle, no border) */}
         <div className="relative px-7 py-5 md:px-8 md:py-6 flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-black/45">
           <span>ShopABlock</span>
           <span>{String(index + 1).padStart(2, "0")} / 03</span>
@@ -166,8 +160,6 @@ export default function Stacks() {
   const p2 = useTransform(scrollYProgress, [0.22, 0.72], [0, 1]);
   const p3 = useTransform(scrollYProgress, [0.55, 1.0], [0, 1]);
 
-  // ✅ Uses /public/shopablocks/Card1.png ... Card6.png
-  // We pick 3 that match the story, but you can swap these anytime.
   const cards: StackCard[] = [
     {
       eyebrow: "THE PROBLEM",

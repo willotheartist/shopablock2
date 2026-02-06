@@ -1,42 +1,62 @@
+//·src/app/app/settings/page.tsx
 import { Container, Panel, Kicker, Button } from "@/components/ui";
+import { getSessionUser } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+import PayoutsConnectButton from "@/components/PayoutsConnectButton";
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const user = await getSessionUser();
+  if (!user) {
+    return (
+      <Container narrow>
+        <div className="py-10">Unauthorized</div>
+      </Container>
+    );
+  }
+
+  const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
+
+  const status = dbUser?.payoutsStatus ?? "not_started";
+  const statusLabel =
+    status === "active"
+      ? "Connected"
+      : status === "pending"
+      ? "Pending"
+      : status === "restricted"
+      ? "Restricted"
+      : "Not connected";
+
   return (
     <Container narrow>
       <div className="py-10 grid gap-8">
-
         <Kicker>Settings</Kicker>
 
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Account
-        </h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Account</h1>
 
-        {/* Account */}
         <Panel>
           <div className="p-6 grid gap-4 text-sm">
             <div>
               <div className="text-(--muted)">Email</div>
-              <div>seller@example.com</div>
+              <div>{dbUser?.email ?? user.email}</div>
             </div>
 
-            <div>
-              <div className="text-(--muted)">Payouts</div>
-              <div>Not connected</div>
+            <div className="grid gap-2">
+              <div>
+                <div className="text-(--muted)">Payouts</div>
+                <div>{statusLabel}</div>
+              </div>
+
+              {status !== "active" ? <PayoutsConnectButton /> : null}
             </div>
           </div>
         </Panel>
 
-        {/* Danger zone */}
         <Panel>
           <div className="p-6 grid gap-4">
             <div className="text-sm font-medium">Danger zone</div>
-
-            <Button variant="outline">
-              Delete account
-            </Button>
+            <Button variant="outline">Delete account</Button>
           </div>
         </Panel>
-
       </div>
     </Container>
   );

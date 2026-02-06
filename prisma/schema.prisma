@@ -1,3 +1,4 @@
+//·prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,6 +16,15 @@ model User {
   blocks       Block[]
   orders       Order[]
   sessions     Session[]
+
+  // ✅ KompiPay / Stripe Connect (via KompiPay)
+  payoutsStatus            PayoutsStatus @default(not_started)
+  kompipayAccountId        String?
+  stripeConnectedAccountId String?
+  payoutsEnabledAt         DateTime?
+
+  @@index([payoutsStatus])
+  @@index([kompipayAccountId])
 }
 
 model Session {
@@ -73,6 +83,12 @@ model Order {
   email        String
   blockId      String
   sellerId     String
+
+  // ✅ KompiPay / Stripe ids (optional, but very useful)
+  kompipayPaymentId         String?
+  stripePaymentIntentId     String?
+  stripeCheckoutSessionId   String?
+
   shipName     String?
   shipLine1    String?
   shipLine2    String?
@@ -87,6 +103,8 @@ model Order {
 
   @@index([blockId])
   @@index([sellerId])
+  @@index([kompipayPaymentId])
+  @@index([stripePaymentIntentId])
 }
 
 enum DeliveryType {
@@ -105,4 +123,11 @@ enum OrderStatus {
   paid
   fulfilled
   cancelled
+}
+
+enum PayoutsStatus {
+  not_started
+  pending
+  active
+  restricted
 }

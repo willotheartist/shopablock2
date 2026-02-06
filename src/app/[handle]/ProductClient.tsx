@@ -3,7 +3,6 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui";
 
 type MediaItem = { id: string; url: string };
@@ -22,55 +21,6 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 function moneyGBP(pence: number) {
   return `£${(Number(pence) / 100).toFixed(2)}`;
-}
-
-function Icon({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center justify-center w-12 h-12 text-base leading-none">
-      {children}
-    </span>
-  );
-}
-
-function TopBar({ brand = "block" }: { brand?: string }) {
-  return (
-    <div className="w-full border-b border-black bg-[rgb(246,245,241)]">
-      <div className="w-full px-0">
-        <div className="w-full border border-black bg-white h-12 flex items-center">
-          <Link
-            href="/explore"
-            aria-label="Back"
-            title="Back"
-            className="h-12 w-12 border-r border-black grid place-items-center hover:bg-black hover:text-[rgb(246,245,241)] transition"
-          >
-            <Icon>←</Icon>
-          </Link>
-
-          <button
-            type="button"
-            aria-label="Menu"
-            className="h-12 w-12 border-r border-black grid place-items-center hover:bg-black hover:text-[rgb(246,245,241)] transition"
-          >
-            <Icon>≡</Icon>
-          </button>
-
-          <div className="flex-1 grid place-items-center">
-            <div className="text-xs uppercase tracking-[0.28em] leading-none">
-              {brand}
-            </div>
-          </div>
-
-          <button
-            type="button"
-            aria-label="Search"
-            className="h-12 w-12 border-l border-black grid place-items-center hover:bg-black hover:text-[rgb(246,245,241)] transition"
-          >
-            <Icon>⌕</Icon>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
 }
 
 function AccordionRow({
@@ -112,10 +62,8 @@ export default function ProductClient({
 
   return (
     <main className="bg-[rgb(246,245,241)] text-black min-h-screen w-full">
-      <TopBar brand="block" />
-
       {/* FULL BLEED split layout */}
-      <div className="border-t border-black w-full">
+      <div className="w-full">
         <div className="w-full grid grid-cols-1 md:grid-cols-[1fr_420px]">
           {/* LEFT: media (full-bleed column) */}
           <div className="md:border-r border-black">
@@ -195,7 +143,7 @@ export default function ProductClient({
           {/* RIGHT: info / buy (fixed column) */}
           <div>
             <div className="p-6 md:p-10">
-              <div className="md:sticky md:top-16">
+              <div className="md:sticky md:top-8">
                 <motion.div
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
