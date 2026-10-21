@@ -695,7 +695,15 @@ export default function Home() {
             In your bio. In a message. In the newsletter you finally send. Your
             shop is always one click away.
           </p>
-          <button className="sb-copy-link" onClick={copyLink}>
+          <button
+            className="sb-copy-link"
+            aria-label={
+              copied
+                ? "Example shop link copied"
+                : "Copy the example shop link: shopablock.co/demo"
+            }
+            onClick={copyLink}
+          >
             <Link2 size={20} />
             <span>shopablock.co/demo</span>
             <span>{copied ? "Copied demo link" : "Try copying a link"}</span>

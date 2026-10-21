@@ -2412,3 +2412,58 @@ body {
     display: none;
   }
 }
+/* Keep anchor offsets and compact screens aligned with the sticky header. */
+.sb-journey,
+.sb-assistant {
+  scroll-margin-top: 0;
+}
+.sb-art-coordinate {
+  top: 0;
+  background: #111;
+  padding: 3px 0 3px 8px;
+}
+@media (max-width: 640px) {
+  .sb-hero-copy h1 {
+    font-size: clamp(48px, 14vw, 84px);
+  }
+  .sb-hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .sb-hero-actions .sb-button-white {
+    justify-content: space-between;
+  }
+  .sb-hero-actions .sb-button-ghost {
+    justify-content: center;
+    padding: 10px 0;
+    min-height: 40px;
+  }
+  .sb-art-coordinate {
+    right: 14px;
+    top: 0;
+    font-size: 14px;
+  }
+}
+@media (max-width: 360px) {
+  .sb-nav-actions > .sb-button {
+    display: none;
+  }
+  .sb-stage-tabs {
+    gap: 17px;
+  }
+  .sb-stage-tabs button {
+    font-size: 15px;
+    gap: 6px;
+  }
+  .sb-demo-browser > span {
+    font-size: 14px;
+    gap: 4px;
+  }
+  .sb-showcase-note > span:last-child {
+    gap: 8px;
+    max-width: 230px;
+  }
+  .sb-assistant-demo-head .sb-example-pill {
+    font-size: 14px;
+  }
+}
