@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./monochrome.css";
 import type { Metadata } from "next";
 import { Header, Footer } from "@/components/v2/Chrome";
 import { getSessionUser } from "@/lib/auth";
