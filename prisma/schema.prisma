@@ -1,0 +1,195 @@
+//·prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  createdAt    DateTime  @default(now())
+  passwordHash String
+  blocks       Block[]
+  orders       Order[]
+  sessions     Session[]
+  assets       Asset[]
+  agentRuns    AgentRun[]
+  displayName  String @default("")
+
+  // ✅ KompiPay / Stripe Connect (via KompiPay)
+  payoutsStatus            PayoutsStatus @default(not_started)
+  kompipayAccountId        String?
+  stripeConnectedAccountId String?
+  payoutsEnabledAt         DateTime?
+
+  @@index([payoutsStatus])
+  @@index([kompipayAccountId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Block {
+  id           String       @id @default(cuid())
+  handle       String       @unique
+  title        String
+  description  String
+  price        Int
+  currency     String       @default("GBP")
+  status       BlockStatus  @default(draft)
+  quantity     Int?
+  soldCount    Int          @default(0)
+  reservedCount Int         @default(0)
+  brandName    String       @default("")
+  shippingPrice Int        @default(0)
+  deliveryNote String      @default("")
+  options      Json         @default("[]")
+  digitalAssetId String?
+  archivedAt   DateTime?
+  deliveryType DeliveryType @default(physical)
+  ownerId      String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  owner  User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  orders Order[]
+  media  BlockMedia[]
+
+  @@index([handle])
+  @@index([ownerId])
+}
+
+model BlockMedia {
+  id        String   @id @default(cuid())
+  blockId   String
+  url       String
+  sort      Int      @default(0)
+  createdAt DateTime @default(now())
+
+  block Block @relation(fields: [blockId], references: [id], onDelete: Cascade)
+
+  @@index([blockId])
+  @@index([sort])
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  status       OrderStatus @default(pending)
+  amount       Int
+  currency     String
+  email        String
+  blockId      String
+  sellerId     String
+  checkoutKey  String?     @unique
+  accessTokenHash String?
+  units        Int         @default(1)
+  option       String?
+  shippingAmount Int      @default(0)
+  productTitle String?
+  digitalAssetId String?
+  receiptSentAt DateTime?
+  trackingReference String?
+
+  // ✅ KompiPay / Stripe ids (optional, but very useful)
+  kompipayPaymentId         String?
+  stripePaymentIntentId     String?
+  stripeCheckoutSessionId   String?
+
+  shipName     String?
+  shipLine1    String?
+  shipLine2    String?
+  shipCity     String?
+  shipPostcode String?
+  shipCountry  String?
+  fulfilledAt  DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  block        Block       @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  seller       User        @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+
+  @@index([blockId])
+  @@index([sellerId])
+  @@index([kompipayPaymentId])
+  @@index([stripePaymentIntentId])
+}
+
+enum DeliveryType {
+  physical
+  digital
+}
+
+enum BlockStatus {
+  draft
+  active
+  sold_out
+}
+
+enum OrderStatus {
+  pending
+  paid
+  fulfilled
+  cancelled
+}
+
+enum PayoutsStatus {
+  not_started
+  pending
+  active
+  restricted
+}
+
+model Asset {
+  id        String @id @default(cuid())
+  ownerId   String
+  owner     User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  pathname  String @unique
+  name      String
+  contentType String
+  size      Int
+  kind      String
+  createdAt DateTime @default(now())
+  @@index([ownerId])
+}
+
+model AgentRun {
+  id        String @id @default(cuid())
+  ownerId   String
+  owner     User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  kind      String
+  status    String @default("running")
+  input     Json
+  output    Json?
+  actions   Json @default("[]")
+  error     String?
+  createdAt DateTime @default(now())
+  completedAt DateTime?
+  @@index([ownerId, createdAt])
+}
+
+model RateLimit {
+  id String @id
+  count Int @default(0)
+  expiresAt DateTime
+  @@index([expiresAt])
+}
+
+model PasswordReset {
+  id String @id @default(cuid())
+  userId String
+  tokenHash String @unique
+  expiresAt DateTime
+  usedAt DateTime?
+}
