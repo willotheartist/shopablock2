@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { prisma } from "@/lib/db";
-import { requireUser } from "@/lib/v2/http";
+import { requirePageUser } from "@/lib/v2/session";
 import { money } from "@/lib/v2/product";
 import { SyncOrders } from "@/components/v2/OrderActions";
 export const metadata = { title: "Orders" };
@@ -10,7 +10,7 @@ export default async function Orders({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
-  const u = await requireUser();
+  const u = await requirePageUser();
   const { status } = await searchParams;
   const filter = ["pending", "paid", "fulfilled", "cancelled"].includes(
     status || "",

@@ -254,9 +254,9 @@ export default function Home() {
                   <p>A little ritual, made better.</p>
                   <div />
                   <div />
-                  <button onClick={() => location.assign("/create")}>
+                  <Link href="/create">
                     <Sparkles size={14} /> Help me write this
-                  </button>
+                  </Link>
                 </div>
                 <MousePointer2 className="cursor-icon" size={28} />
               </div>

@@ -1,9 +1,9 @@
-import { requireUser } from "@/lib/v2/http";
+import { requirePageUser } from "@/lib/v2/session";
 import { paymentsConfigured } from "@/lib/kompipay";
 import Settings from "@/components/v2/Settings";
 export const metadata = { title: "Settings" };
 export default async function SettingsPage() {
-  const u = await requireUser();
+  const u = await requirePageUser();
   return (
     <main id="main">
       <div className="workspace-top">

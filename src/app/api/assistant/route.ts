@@ -139,10 +139,8 @@ export async function POST(req: Request) {
         })
         .catch(() => {});
     if (e instanceof AppError) return failure(e);
-    console.error(
-      "Assistant request failed",
-      e instanceof Error ? e.name : "Unknown",
-    );
+    const detail = e as { name?: string; message?: string; statusCode?: number; cause?: { name?: string; statusCode?: number } };
+    console.error("Assistant request failed", {name: detail.name, statusCode: detail.statusCode, cause: detail.cause?.name, causeStatus: detail.cause?.statusCode, message: detail.message?.replace(/(Bearer\s+|sk-|vck_)[^\s"']+/g, "[redacted]").slice(0,400)});
     return NextResponse.json(
       {
         error:

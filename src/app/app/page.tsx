@@ -8,11 +8,11 @@ import {
   Sparkles,
 } from "lucide-react";
 import { prisma } from "@/lib/db";
-import { requireUser } from "@/lib/v2/http";
+import { requirePageUser } from "@/lib/v2/session";
 import { money } from "@/lib/v2/product";
 export const metadata = { title: "Your shop" };
 export default async function Dashboard() {
-  const u = await requireUser();
+  const u = await requirePageUser();
   const [products, sales, awaiting, recent] = await Promise.all([
     prisma.block.findMany({
       where: { ownerId: u.id, archivedAt: null },

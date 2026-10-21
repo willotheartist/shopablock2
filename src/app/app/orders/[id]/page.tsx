@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { requireUser } from "@/lib/v2/http";
+import { requirePageUser } from "@/lib/v2/session";
 import { money } from "@/lib/v2/product";
 import { FulfilOrder, SyncOrders } from "@/components/v2/OrderActions";
 export default async function Order({
@@ -9,7 +9,7 @@ export default async function Order({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const u = await requireUser();
+  const u = await requirePageUser();
   const { id } = await params;
   const o = await prisma.order.findFirst({
     where: { id, sellerId: u.id },

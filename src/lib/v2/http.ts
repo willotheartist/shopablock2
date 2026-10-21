@@ -30,7 +30,4 @@ export function failure(e: unknown) {
     { status: 500 },
   );
 }
-export function safeNext(v: unknown) {
-  const s = typeof v === "string" ? v : "/app";
-  return /^\/(?!\/)/.test(s) && !s.includes("\\") ? s : "/app";
-}
+export { safeNext } from "./navigation";

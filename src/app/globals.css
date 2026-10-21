@@ -649,7 +649,7 @@ a svg {
 .edit-card > div:nth-of-type(2) {
   width: 70%;
 }
-.edit-card button {
+.edit-card :is(button, a) {
   border: 0;
   background: #ebedff;
   color: var(--blue);
@@ -2877,7 +2877,7 @@ a svg {
   .edit-card > span {
     font-size: 10px;
   }
-  .edit-card button {
+  .edit-card :is(button, a) {
     font-size: 10px;
   }
   .cursor-icon {

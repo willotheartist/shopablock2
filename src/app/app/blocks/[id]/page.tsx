@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { requireUser } from "@/lib/v2/http";
+import { requirePageUser } from "@/lib/v2/session";
 import { toDraft } from "@/lib/v2/products";
 import Builder from "@/components/v2/Builder";
 export default async function Edit({
@@ -8,7 +8,7 @@ export default async function Edit({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const u = await requireUser();
+  const u = await requirePageUser();
   const { id } = await params;
   const p = await prisma.block.findFirst({
     where: { id, ownerId: u.id },

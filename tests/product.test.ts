@@ -132,3 +132,5 @@ test("private receipt tokens are high entropy and stored hashed", () => {
   assert.equal(tokenMatches(a, null), false);
   assert.equal(tokenMatches("x".repeat(201), tokenHash(a)), false);
 });
+
+test('sign-in destinations cannot redirect to a different origin',async()=>{const {safeNext}=await import('../src/lib/v2/navigation');assert.equal(safeNext('/create'),'/create');for(const input of ['https://evil.example','//evil.example','/\\evil.example','/\t/evil.example','/\n/evil.example',null])assert.equal(safeNext(input),'/app');});

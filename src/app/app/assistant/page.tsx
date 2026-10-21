@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/db";
-import { requireUser } from "@/lib/v2/http";
+import { requirePageUser } from "@/lib/v2/session";
 import Assistant from "@/components/v2/Assistant";
 export const metadata = { title: "Your shop assistant" };
 export default async function AssistantPage() {
-  const u = await requireUser();
+  const u = await requirePageUser();
   const runs = await prisma.agentRun.findMany({
     where: { ownerId: u.id },
     take: 15,

@@ -20,7 +20,6 @@ import {
   Save,
   Smartphone,
   Sparkles,
-  Trash2,
   X,
 } from "lucide-react";
 import {
