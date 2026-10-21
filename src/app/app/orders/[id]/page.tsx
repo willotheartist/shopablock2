@@ -1,113 +1,118 @@
-//·src/app/app/orders/[id]/page.tsx
 import Link from "next/link";
-import { redirect, notFound } from "next/navigation";
-import { Container, Panel, Kicker, Button } from "@/components/ui";
+import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { getSessionUser } from "@/lib/auth";
-
-export default async function OrderPage({
+import { requirePageUser } from "@/lib/v2/session";
+import { money } from "@/lib/v2/product";
+import { FulfilOrder, SyncOrders } from "@/components/v2/OrderActions";
+export default async function Order({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const user = await getSessionUser();
-  if (!user) redirect("/sign-in?next=/app/orders");
-
+  const u = await requirePageUser();
   const { id } = await params;
-
-  const order = await prisma.order.findFirst({
-    where: { id, sellerId: user.id },
-    select: {
-      id: true,
-      status: true,
-      amount: true,
-      currency: true,
-      email: true,
-      shipName: true,
-      shipLine1: true,
-      shipLine2: true,
-      shipCity: true,
-      shipPostcode: true,
-      shipCountry: true,
-      fulfilledAt: true,
-      createdAt: true,
-      block: { select: { id: true, title: true, handle: true } },
-    },
+  const o = await prisma.order.findFirst({
+    where: { id, sellerId: u.id },
+    include: { block: { select: { title: true, deliveryType: true } } },
   });
-
-  if (!order) notFound();
-
-  const ship = [
-    order.shipName,
-    order.shipLine1,
-    order.shipLine2,
-    order.shipCity,
-    order.shipPostcode,
-    order.shipCountry,
-  ].filter(Boolean);
-
+  if (!o) notFound();
   return (
-    <Container narrow>
-      <div className="py-10 grid gap-6">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <Kicker>App</Kicker>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight">Order</h1>
-            <div className="mt-2 font-mono text-xs uppercase tracking-[0.22em] text-(--muted)">
-              {order.id}
-            </div>
-          </div>
-
-          <Link href="/app/orders">
-            <Button variant="outline">Back</Button>
-          </Link>
+    <main id="main">
+      <Link className="text-link" href="/app/orders">
+        ← All orders
+      </Link>
+      <div className="workspace-top" style={{ marginTop: 25 }}>
+        <div>
+          <span className="eyebrow">ORDER #{o.id.slice(-8).toUpperCase()}</span>
+          <h1>{o.productTitle || o.block.title}</h1>
+          <p>
+            {o.createdAt.toLocaleString("en-GB", {
+              dateStyle: "medium",
+              timeStyle: "short",
+              timeZone: "Europe/London",
+            })}
+          </p>
         </div>
-
-        <Panel>
-          <div className="p-5 grid gap-4">
-            <div className="text-sm">
-              <div className="text-(--muted)">Block</div>
-              <div className="font-medium">{order.block.title}</div>
-              <div className="font-mono text-xs uppercase tracking-[0.22em] text-(--muted)">
-                @{order.block.handle}
-              </div>
-            </div>
-
-            <div className="grid gap-2 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-(--muted)">Status</span>
-                <span className="font-medium">{order.status}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-(--muted)">Amount</span>
-                <span className="font-medium">
-                  {order.currency} {(order.amount / 100).toFixed(2)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-(--muted)">Customer</span>
-                <span className="font-medium">{order.email}</span>
-              </div>
-            </div>
-
-            <div className="text-sm">
-              <div className="text-(--muted)">Shipping</div>
-              {ship.length ? (
-                <div className="mt-1 whitespace-pre-line">{ship.join("\n")}</div>
-              ) : (
-                <div className="mt-1 text-(--muted)">No shipping details.</div>
-              )}
-            </div>
-
-            <div className="text-sm">
-              <div className="text-(--muted)">Fulfilled</div>
-              <div className="mt-1">
-                {order.fulfilledAt ? order.fulfilledAt.toISOString() : "No"}
-              </div>
-            </div>
-          </div>
-        </Panel>
+        <span className={`status ${o.status}`}>{o.status}</span>
       </div>
-    </Container>
+      <div className="order-detail-grid">
+        <section className="panel">
+          <div className="panel-heading">
+            <h2>The details</h2>
+          </div>
+          <dl className="detail-list">
+            <div>
+              <dt>Customer</dt>
+              <dd>{o.email}</dd>
+            </div>
+            <div>
+              <dt>Product</dt>
+              <dd>
+                {o.productTitle || o.block.title}
+                {o.option ? ` · ${o.option}` : ""}
+              </dd>
+            </div>
+            <div>
+              <dt>Total · including delivery</dt>
+              <dd>{money(o.amount, o.currency)}</dd>
+            </div>
+            {o.shipName && (
+              <div>
+                <dt>Delivery address</dt>
+                <dd>
+                  {[
+                    o.shipName,
+                    o.shipLine1,
+                    o.shipLine2,
+                    o.shipCity,
+                    o.shipPostcode,
+                    "United Kingdom",
+                  ]
+                    .filter(Boolean)
+                    .join("\n")}
+                </dd>
+              </div>
+            )}
+            {o.trackingReference && (
+              <div>
+                <dt>Tracking reference</dt>
+                <dd>{o.trackingReference}</dd>
+              </div>
+            )}
+          </dl>
+        </section>
+        <section className="panel">
+          <div className="panel-heading">
+            <h2>
+              {o.status === "paid"
+                ? "Ready to head out."
+                : o.status === "fulfilled"
+                  ? "All taken care of."
+                  : "Payment status"}
+            </h2>
+          </div>
+          {o.status === "paid" && o.block.deliveryType === "physical" ? (
+            <FulfilOrder id={o.id} />
+          ) : o.status === "fulfilled" ? (
+            <p className="text-muted" style={{ fontSize: 12 }}>
+              {o.digitalAssetId
+                ? "Your customer can download their file from the private order confirmation page."
+                : `Marked as sent${o.fulfilledAt ? ` on ${o.fulfilledAt.toLocaleDateString("en-GB")}` : ""}.`}
+            </p>
+          ) : (
+            <>
+              <p
+                className="text-muted"
+                style={{ fontSize: 12, marginBottom: 20 }}
+              >
+                Only confirmed payments count as sales. If the customer has
+                paid, refresh to check the provider.
+              </p>
+              <SyncOrders />
+            </>
+          )}
+        </section>
+      </div>
+    </main>
   );
 }

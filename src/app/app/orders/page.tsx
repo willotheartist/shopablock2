@@ -1,67 +1,114 @@
-// src/app/app/orders/page.tsx
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { Container, Panel, Kicker } from "@/components/ui";
+import { ShoppingBag } from "lucide-react";
 import { prisma } from "@/lib/db";
-import { getSessionUser } from "@/lib/auth";
-
-export default async function OrdersPage() {
-  const user = await getSessionUser();
-  if (!user) redirect("/sign-in?next=/app/orders");
-
+import { requirePageUser } from "@/lib/v2/session";
+import { money } from "@/lib/v2/product";
+import { SyncOrders } from "@/components/v2/OrderActions";
+export const metadata = { title: "Orders" };
+export default async function Orders({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const u = await requirePageUser();
+  const { status } = await searchParams;
+  const filter = ["pending", "paid", "fulfilled", "cancelled"].includes(
+    status || "",
+  )
+    ? (status as "pending" | "paid" | "fulfilled" | "cancelled")
+    : undefined;
   const orders = await prisma.order.findMany({
-    where: { sellerId: user.id },
+    where: { sellerId: u.id, ...(filter ? { status: filter } : {}) },
+    take: 100,
     orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      status: true,
-      amount: true,
-      currency: true,
-      email: true,
-      createdAt: true,
-      block: { select: { title: true, handle: true } },
-    },
+    include: { block: { select: { title: true } } },
   });
-
   return (
-    <Container narrow>
-      <div className="py-10 grid gap-6">
+    <main id="main">
+      <div className="workspace-top">
         <div>
-          <Kicker>App</Kicker>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight">Orders</h1>
+          <span className="eyebrow">GOOD THINGS, HEADING OUT</span>
+          <h1>Your orders.</h1>
+          <p>Keep track of every little delivery.</p>
         </div>
-
-        <Panel>
-          <div className="p-5">
-            {orders.length === 0 ? (
-              <p className="text-sm text-(--muted)">No orders yet.</p>
-            ) : (
-              <div className="border-t border-(--line)">
-                {orders.map((o) => (
-                  <Link
-                    key={o.id}
-                    href={`/app/orders/${o.id}`}
-                    className="block border-t border-(--line) hover:bg-(--accent)/5"
-                  >
-                    <div className="flex items-center justify-between gap-6 py-4">
-                      <div className="min-w-0">
-                        <div className="truncate text-sm font-medium">
-                          {o.block.title}
-                        </div>
-                        <div className="truncate font-mono text-xs uppercase tracking-[0.22em] text-(--muted)">
-                          {o.status} · {o.currency} {(o.amount / 100).toFixed(2)} ·{" "}
-                          {o.email}
-                        </div>
-                      </div>
-                      <div className="text-(--accent) text-xl leading-none">↗</div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        </Panel>
+        <SyncOrders />
       </div>
-    </Container>
+      <div className="editor-tabs">
+        {[
+          ["", "All orders"],
+          ["paid", "To send"],
+          ["fulfilled", "Completed"],
+          ["pending", "Pending"],
+        ].map(([v, l]) => (
+          <Link
+            key={v}
+            href={`/app/orders${v ? `?status=${v}` : ""}`}
+            className={
+              (!filter && !v) || filter === v ? "text-link" : "text-muted"
+            }
+            style={{ fontSize: 11, paddingBottom: 12 }}
+          >
+            {l}
+          </Link>
+        ))}
+      </div>
+      {orders.length ? (
+        <section className="panel">
+          <div className="table-scroll">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Customer</th>
+                  <th>Date</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((o) => (
+                  <tr key={o.id}>
+                    <td>
+                      <Link href={`/app/orders/${o.id}`}>
+                        {o.productTitle || o.block.title} ↗
+                        <small>#{o.id.slice(-8).toUpperCase()}</small>
+                      </Link>
+                    </td>
+                    <td>{o.email}</td>
+                    <td>
+                      {o.createdAt.toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                      })}
+                    </td>
+                    <td>{money(o.amount, o.currency)}</td>
+                    <td>
+                      <span className={`status ${o.status}`}>{o.status}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="small-note">
+            Showing the latest 100 orders. Pending orders reserve stock until
+            the payment provider confirms payment or cancellation.
+          </p>
+        </section>
+      ) : (
+        <div className="empty-state">
+          <ShoppingBag size={35} />
+          <h2>A little quiet, for now.</h2>
+          <p>
+            {filter
+              ? "No orders with this status."
+              : "Share your shop link with your people. Your orders will appear here."}
+          </p>
+          <Link href="/app" className="btn btn-outline">
+            Back to your shop ↗
+          </Link>
+        </div>
+      )}
+    </main>
   );
 }

@@ -1,74 +1,45 @@
-// src/app/demo/page.tsx
 import Link from "next/link";
-import { Button, Container, Panel, Row, Kicker } from "@/components/ui";
-
-export default function DemoPage() {
+import ProductView from "@/components/v2/ProductView";
+import { mugDraft } from "@/lib/v2/product";
+export const metadata = { title: "A little shop, in action" };
+export default async function Demo({
+  searchParams,
+}: {
+  searchParams: Promise<{ product?: string }>;
+}) {
+  const { product } = await searchParams;
+  const d =
+    product === "1"
+      ? {
+          ...mugDraft,
+          title: "Off the grid",
+          brandName: "Weekend Editions",
+          price: "18",
+          options: "A3",
+          description:
+            "A little space to think. An original geometric art print in forest green and chartreuse. A bold study in finding your own way, ready to bring a fresh perspective to your wall.",
+          media: [{ url: "/images/print.svg" }],
+        }
+      : product === "2"
+        ? {
+            ...mugDraft,
+            title: "A little more organised",
+            brandName: "The Daily Practice",
+            price: "12",
+            deliveryType: "digital" as const,
+            options: "",
+            description:
+              "Less busy. More intentional. A printable daily planner that gives your ideas, priorities and small wins a little room to breathe. Start whenever you are ready.",
+            media: [{ url: "/images/planner.svg" }],
+          }
+        : mugDraft;
   return (
-    <Container narrow>
-      <div className="py-20 grid gap-8">
-        <header className="grid gap-5">
-          <Kicker>Demo block</Kicker>
-          <h1 className="text-4xl font-semibold tracking-tight leading-[1.05]">
-            Notion Template
-          </h1>
-          <p className="text-sm text-(--muted) max-w-prose leading-relaxed">
-            A single product page for a single product. Clear description, media,
-            price, delivery — and one CTA.
-          </p>
-        </header>
-
-        <Panel>
-          <div className="p-6 grid gap-6">
-            {/* Media strip (placeholder blocks, same design language as home) */}
-            <div className="grid grid-cols-3 gap-2">
-              <div className="aspect-4/3 border border-(--line-strong) bg-transparent" />
-              <div className="aspect-4/3 border border-(--line-strong) bg-transparent" />
-              <div className="aspect-4/3 border border-(--line-strong) bg-transparent" />
-            </div>
-
-            {/* Core fields */}
-            <div className="grid">
-              <Row
-                left={<div className="text-sm">Product</div>}
-                right={<div className="font-medium">Notion Template</div>}
-              />
-              <Row left={<div className="text-sm">Price</div>} right={<div>£12</div>} />
-              <Row
-                left={<div className="text-sm">Delivery</div>}
-                right={<div>Instant download</div>}
-              />
-            </div>
-
-            {/* Description */}
-            <div className="text-sm leading-relaxed text-(--muted)">
-              A clean, reusable workspace for planning, writing, and shipping.
-              Includes setup guide + updates.
-            </div>
-
-            {/* Single CTA */}
-            <div className="pt-2">
-              <Button href="/app/new" variant="primary" full>
-                Create your own block
-              </Button>
-            </div>
-
-            <div className="text-[11px] uppercase tracking-[0.28em] text-(--muted)">
-              Demo only • Checkout & receipt in real blocks
-            </div>
-          </div>
-        </Panel>
-
-        <p className="text-sm text-(--muted)">
-          This is a demo block. Real blocks include checkout, receipts, and delivery.
-        </p>
-
-        <Link
-          href="/"
-          className="text-sm text-(--muted) hover:text-black transition"
-        >
-          ← Back to home
-        </Link>
+    <main id="main">
+      <div className="demo-banner">
+        A little look at what you can create. This is an example shop.
+        <Link href="/create">Make yours ↗</Link>
       </div>
-    </Container>
+      <ProductView draft={d} mode="demo" />
+    </main>
   );
 }

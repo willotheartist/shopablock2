@@ -1,33 +1,58 @@
-//·src/app/explore/page.tsx
-import { listPublicBlocks } from "@/lib/blocks";
-import ExploreGrid from "./ExploreGrid";
-
+import Link from "next/link";
+import { prisma } from "@/lib/db";
+import { money } from "@/lib/v2/product";
 export const dynamic = "force-dynamic";
-
-export default async function ExplorePage() {
-  const blocks = await listPublicBlocks();
-
-  const tiles = blocks.map((b) => ({
-    id: b.id,
-    title: b.title,
-    handle: b.handle,
-    thumbUrl: b.media?.[0]?.url ?? null,
-  }));
-
+export const metadata = { title: "Discover little shops" };
+export default async function Explore() {
+  const products = await prisma.block.findMany({
+    where: { status: "active", archivedAt: null },
+    take: 60,
+    orderBy: { createdAt: "desc" },
+    include: { media: { take: 1, orderBy: { sort: "asc" } } },
+  });
   return (
-    <main className="bg-[rgb(246,245,241)] text-black min-h-screen">
-      {/* FULL-WIDTH GRID */}
-      {tiles.length === 0 ? (
-        <div className="px-6 pb-20 flex justify-center">
-          <div className="w-full max-w-xl border border-black bg-white p-10 text-center">
-            <div className="text-lg">No active blocks yet.</div>
-            <div className="mt-2 text-sm text-black/60">
-              Publish a block, then it will appear here.
-            </div>
-          </div>
+    <main
+      id="main"
+      className="wrap"
+      style={{ paddingTop: 60, paddingBottom: 80 }}
+    >
+      <div className="section-intro">
+        <div>
+          <span className="eyebrow">LITTLE SHOPS. GOOD THINGS.</span>
+          <h2>
+            Made by someone.
+            <br />
+            Found by you.
+          </h2>
+        </div>
+      </div>
+      {products.length ? (
+        <div className="examples-grid">
+          {products.map((b) => (
+            <Link href={`/${b.handle}`} key={b.id} className="example-card">
+              <div className="example-photo">
+                {b.media[0] && <img src={b.media[0].url} alt={b.title} />}
+              </div>
+              <div className="example-card-caption">
+                <div>
+                  <p>{b.brandName}</p>
+                  <h3>{b.title}</h3>
+                </div>
+                <span>{money(b.price, b.currency)}</span>
+              </div>
+            </Link>
+          ))}
         </div>
       ) : (
-        <ExploreGrid blocks={tiles} />
+        <div className="empty-state">
+          <h2>A good thing is coming.</h2>
+          <p>
+            The first shops are taking shape. See what yours could look like.
+          </p>
+          <Link href="/demo" className="btn btn-dark">
+            Explore an example shop ↗
+          </Link>
+        </div>
       )}
     </main>
   );

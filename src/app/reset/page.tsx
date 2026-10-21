@@ -1,72 +1,87 @@
-// src/app/reset/page.tsx
-export const dynamic = "force-dynamic";
-
-export default function ResetPage({
+import Link from "next/link";
+import { emailConfigured } from "@/lib/v2/mail";
+export const metadata = {
+  title: "Reset your password",
+  robots: { index: false, follow: false },
+  referrer: "no-referrer" as const,
+};
+export default async function Reset({
   searchParams,
 }: {
-  searchParams?: { ok?: string; error?: string };
+  searchParams: Promise<{ token?: string; sent?: string; error?: string }>;
 }) {
-  const ok = searchParams?.ok;
-  const error = searchParams?.error;
-
+  const { token, sent, error } = await searchParams;
   return (
-    <div className="min-h-[70vh] flex items-center justify-center px-6">
-      <div className="w-full max-w-sm border border-(--line) rounded-2xl p-6">
-        <h1 className="text-xl font-semibold">Reset password</h1>
-        <p className="text-sm text-(--muted) mt-1">
-          Dev/admin reset (disable in production).
+    <main id="main">
+      <section
+        className="auth-form"
+        style={{ maxWidth: 520, margin: "35px auto 60px" }}
+      >
+        <span className="eyebrow">LET’S GET YOU BACK IN</span>
+        <h1>A fresh start.</h1>
+        <p>
+          {token
+            ? "Choose a new password for your shop."
+            : "Enter your account email and we’ll send a private reset link."}
         </p>
-
-        {ok ? (
-          <div className="mt-4 text-sm border border-(--line) rounded-xl px-3 py-2">
-            Password updated. You can sign in now.
+        {sent && (
+          <div className="notice success" role="status">
+            If there is an account with that email, a reset link is on its way.
           </div>
-        ) : null}
-
-        {error ? (
-          <div className="mt-4 text-sm border border-(--line) rounded-xl px-3 py-2">
-            {error === "forbidden"
-              ? "Reset is disabled."
-              : error === "missing"
-              ? "Enter email + new password (8+ chars)."
-              : error === "notfound"
-              ? "No user with that email."
-              : "Something went wrong."}
+        )}
+        {error && (
+          <div className="notice error" role="alert">
+            {error === "expired"
+              ? "That link has expired or has already been used. Request a new one."
+              : error === "invalid"
+                ? "Please check your email or use a password with 10–72 characters."
+                : "Password reset emails are currently unavailable. Please try again later."}
           </div>
-        ) : null}
-
-        <form className="mt-6 grid gap-3" action="/api/auth/reset" method="post">
-          <label className="grid gap-1 text-sm">
-            Email
-            <input
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              className="border border-(--line) rounded-xl px-3 py-2"
-            />
-          </label>
-
-          <label className="grid gap-1 text-sm">
-            New password
-            <input
-              name="password"
-              type="password"
-              required
-              minLength={8}
-              autoComplete="new-password"
-              className="border border-(--line) rounded-xl px-3 py-2"
-            />
-          </label>
-
-          <button
-            type="submit"
-            className="mt-2 rounded-xl px-3 py-2 border border-(--line) hover:bg-(--accent)/5"
-          >
-            Set new password
-          </button>
-        </form>
-      </div>
-    </div>
+        )}
+        {!token && !emailConfigured() ? (
+          <div className="notice">
+            Password reset emails are being set up. Please try again later.
+          </div>
+        ) : (
+          <form action="/api/auth/reset" method="post">
+            {token ? (
+              <>
+                <input type="hidden" name="token" value={token} />
+                <div className="field">
+                  <label htmlFor="password">New password</label>
+                  <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    autoComplete="new-password"
+                    required
+                    minLength={10}
+                    maxLength={72}
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="field">
+                <label htmlFor="email">Email address</label>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  required
+                  maxLength={254}
+                />
+              </div>
+            )}
+            <button className="btn btn-dark btn-block">
+              {token ? "Set new password" : "Send reset link"} ↗
+            </button>
+          </form>
+        )}
+        <p className="bottom-note">
+          <Link href="/sign-in">Back to sign in</Link>
+        </p>
+      </section>
+    </main>
   );
 }
