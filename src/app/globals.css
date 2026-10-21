@@ -21,7 +21,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   font-size: 15px;
   -webkit-font-smoothing: antialiased;
 }
@@ -84,11 +84,11 @@ a svg {
   vertical-align: middle;
 }
 :focus-visible {
-  outline: 3px solid #8293ff;
+  outline: 3px solid #929292;
   outline-offset: 4px;
 }
 ::selection {
-  background: #dce2ff;
+  background: #dedede;
 }
 .skip-link {
   position: fixed;
@@ -147,7 +147,7 @@ a svg {
 .btn-sm {
   padding: 11px 15px;
   gap: 12px;
-  font-size: 13px;
+  font-size: 14px;
 }
 .btn-block {
   width: 100%;
@@ -176,7 +176,7 @@ a svg {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.13em;
   line-height: 1.5;
@@ -216,7 +216,7 @@ a svg {
 .header-nav {
   display: flex;
   gap: 32px;
-  font-size: 13px;
+  font-size: 14px;
 }
 .header-nav a:hover {
   color: var(--blue);
@@ -225,7 +225,7 @@ a svg {
   display: flex;
   gap: 25px;
   align-items: center;
-  font-size: 13px;
+  font-size: 14px;
 }
 .mobile-menu {
   display: none;
@@ -268,13 +268,13 @@ a svg {
   align-items: center;
   gap: 7px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
   margin-top: 17px;
 }
 .hero-bottom-note {
   margin-top: auto;
   padding-top: 65px;
-  font-size: 11px;
+  font-size: 14px;
   color: #7a7f72;
 }
 .hero-bottom-note span {
@@ -318,7 +318,7 @@ a svg {
   align-items: center;
   gap: 7px;
   padding: 10px 12px;
-  font-size: 8px;
+  font-size: 14px;
   letter-spacing: 0.07em;
 }
 .hero-shop {
@@ -335,14 +335,14 @@ a svg {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 6px;
+  font-size: 14px;
   letter-spacing: 0.1em;
   margin: 3px 0 14px;
   color: #878c7e;
 }
 .mini-brand {
   font-weight: 700;
-  font-size: 8px;
+  font-size: 14px;
   color: var(--ink);
 }
 .hero-product-image {
@@ -360,7 +360,7 @@ a svg {
   position: absolute;
   bottom: 11px;
   left: 12px;
-  font-size: 6px;
+  font-size: 14px;
   letter-spacing: 0.12em;
   color: #49525e;
 }
@@ -375,7 +375,7 @@ a svg {
   letter-spacing: -0.035em;
 }
 .hero-product-details p {
-  font-size: 9px;
+  font-size: 14px;
   color: #87877d;
   margin-top: 7px;
 }
@@ -389,7 +389,7 @@ a svg {
   padding: 11px 14px;
   background: var(--ink);
   color: white;
-  font-size: 10px;
+  font-size: 14px;
   border-radius: 4px;
 }
 .sample-delivery {
@@ -398,7 +398,7 @@ a svg {
   justify-content: center;
   gap: 5px;
   color: #92958d;
-  font-size: 7px;
+  font-size: 14px;
   margin-top: 13px;
 }
 .assistant-label {
@@ -423,13 +423,13 @@ a svg {
 }
 .assistant-label b {
   display: block;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 600;
 }
 .assistant-label > div > span {
   display: block;
   color: #8c8f86;
-  font-size: 8px;
+  font-size: 14px;
   margin-top: 5px;
 }
 .stage-tabs {
@@ -449,7 +449,7 @@ a svg {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 14px;
   border-radius: 4px;
   color: #7b8173;
 }
@@ -458,7 +458,7 @@ a svg {
   color: white;
 }
 .example-caption {
-  font-size: 8px;
+  font-size: 14px;
   color: #8d9284;
   margin-top: 12px;
   z-index: 1;
@@ -471,13 +471,13 @@ a svg {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   padding: 26px 40px;
-  font-size: 9px;
+  font-size: 14px;
   letter-spacing: 0.1em;
 }
 .strip-signature {
   color: var(--muted);
   font-style: italic;
-  font-size: 11px;
+  font-size: 14px;
   letter-spacing: 0;
 }
 .examples-section {
@@ -499,7 +499,7 @@ a svg {
   margin-top: 20px;
 }
 .section-intro > p {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
   max-width: 310px;
 }
@@ -544,7 +544,7 @@ a svg {
 }
 .example-card-caption p {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 14px;
   margin-bottom: 6px;
 }
 .example-card-caption h3 {
@@ -552,12 +552,12 @@ a svg {
   letter-spacing: -0.025em;
 }
 .example-card-caption > span {
-  font-size: 13px;
+  font-size: 14px;
   align-self: flex-end;
 }
 .small-note {
   color: #969b8f;
-  font-size: 10px;
+  font-size: 14px;
   margin-top: 25px;
 }
 .how-section {
@@ -593,11 +593,11 @@ a svg {
   color: #89917d;
 }
 .upload-tile span {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--ink);
 }
 .upload-tile small {
-  font-size: 8px;
+  font-size: 14px;
 }
 .tiny-file {
   position: absolute;
@@ -611,7 +611,7 @@ a svg {
   border-radius: 6px;
   padding: 7px;
   box-shadow: 0 5px 20px #313b1310;
-  font-size: 9px;
+  font-size: 14px;
   transform: rotate(-4deg);
 }
 .tiny-file img {
@@ -634,10 +634,10 @@ a svg {
 }
 .edit-card > span {
   color: #92978b;
-  font-size: 8px;
+  font-size: 14px;
 }
 .edit-card p {
-  font-size: 12px;
+  font-size: 14px;
   margin: 10px 0;
 }
 .edit-card > div {
@@ -656,7 +656,7 @@ a svg {
   display: flex;
   gap: 6px;
   align-items: center;
-  font-size: 9px;
+  font-size: 14px;
   padding: 8px;
   border-radius: 4px;
   margin-top: 15px;
@@ -676,7 +676,7 @@ a svg {
   background: white;
   border-radius: 6px;
   padding: 15px 10px;
-  font-size: 10px;
+  font-size: 14px;
   display: flex;
   gap: 9px;
   align-items: center;
@@ -694,11 +694,11 @@ a svg {
   padding: 5px 8px;
   border: 1px solid #d5dacb;
   border-radius: 20px;
-  font-size: 8px;
+  font-size: 14px;
   color: #7a846b;
 }
 .step-number {
-  font-size: 9px;
+  font-size: 14px;
   letter-spacing: 0.07em;
   color: #8c9282;
 }
@@ -707,7 +707,7 @@ a svg {
   margin: 14px 0 10px;
 }
 .steps-grid article > p {
-  font-size: 12px;
+  font-size: 14px;
   color: #7a8171;
   max-width: 300px;
 }
@@ -732,19 +732,19 @@ a svg {
   align-items: center;
 }
 .assistant-demo-head strong {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   display: block;
 }
 .assistant-demo-head div > span {
-  font-size: 9px;
+  font-size: 14px;
   color: var(--muted);
   display: block;
   margin-top: 4px;
 }
 .demo-pill {
   margin-left: auto;
-  font-size: 7px;
+  font-size: 14px;
   background: white;
   padding: 5px 7px;
   border: 1px solid #e8e9f1;
@@ -758,7 +758,7 @@ a svg {
   border: 1px solid #e7e8ee;
   border-radius: 8px 8px 0 8px;
   padding: 14px 17px;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.8;
 }
 .demo-reply {
@@ -771,7 +771,7 @@ a svg {
   color: var(--ink);
 }
 .demo-reply p {
-  font-size: 12px;
+  font-size: 14px;
 }
 .demo-reply ul {
   list-style: none;
@@ -779,7 +779,7 @@ a svg {
   margin: 16px 0;
   display: grid;
   gap: 11px;
-  font-size: 10px;
+  font-size: 14px;
   color: #77806e;
 }
 .demo-reply li svg {
@@ -792,7 +792,7 @@ a svg {
   padding: 12px;
   background: #eceffd;
   border-radius: 5px;
-  font-size: 10px;
+  font-size: 14px;
   color: #6472ac;
 }
 .demo-review {
@@ -802,7 +802,7 @@ a svg {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  font-size: 9px;
+  font-size: 14px;
   color: #969aaa;
 }
 .demo-review a {
@@ -810,7 +810,7 @@ a svg {
   font-weight: 600;
 }
 .assistant-copy > p {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
   margin-top: 22px;
   max-width: 350px;
@@ -824,7 +824,7 @@ a svg {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 11px;
+  font-size: 14px;
 }
 .assistant-benefits svg {
   color: #7c8970;
@@ -850,12 +850,12 @@ a svg {
   border: 0;
   background: none;
   padding: 18px 0;
-  font-size: 13px;
+  font-size: 14px;
   text-align: left;
   gap: 15px;
 }
 .faq-list p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   padding-bottom: 19px;
   max-width: 420px;
@@ -898,7 +898,7 @@ a svg {
   padding-bottom: 40px;
 }
 .footer-top > p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .footer-link {
@@ -906,7 +906,7 @@ a svg {
   gap: 20px;
   align-items: center;
   margin-left: auto;
-  font-size: 12px;
+  font-size: 14px;
 }
 .footer-bottom {
   border-top: 1px solid var(--line);
@@ -914,7 +914,7 @@ a svg {
   display: flex;
   justify-content: space-between;
   color: #91958b;
-  font-size: 10px;
+  font-size: 14px;
   gap: 20px;
 }
 .footer-bottom > div {
@@ -938,11 +938,11 @@ a svg {
 .shop-wordmark {
   font-weight: 600;
   letter-spacing: 0.13em;
-  font-size: 12px;
+  font-size: 14px;
   text-transform: uppercase;
 }
 .shop-heading > span {
-  font-size: 10px;
+  font-size: 14px;
   color: var(--muted);
 }
 .product-layout {
@@ -971,7 +971,7 @@ a svg {
   align-items: center;
   flex-direction: column;
   gap: 15px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .product-thumbs {
   display: flex;
@@ -1017,7 +1017,7 @@ a svg {
 }
 .product-info label {
   display: block;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   margin-bottom: 10px;
 }
@@ -1032,7 +1032,7 @@ a svg {
   border: 1px solid var(--line);
   border-radius: 5px;
   padding: 10px 12px;
-  font-size: 11px;
+  font-size: 14px;
 }
 .option-group button.active {
   border-color: var(--ink);
@@ -1046,7 +1046,7 @@ a svg {
 .delivery-info {
   display: flex;
   gap: 8px;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.7;
   color: var(--muted);
   padding: 18px 0;
@@ -1057,7 +1057,7 @@ a svg {
   align-items: center;
   gap: 7px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 14px;
   margin: 17px 0;
 }
 .shop-powered {
@@ -1066,11 +1066,11 @@ a svg {
   align-items: center;
   gap: 8px;
   margin-top: 45px;
-  font-size: 10px;
+  font-size: 14px;
   color: var(--muted);
 }
 .shop-powered .brand {
-  font-size: 13px;
+  font-size: 14px;
   gap: 5px;
   letter-spacing: -0.6px;
 }
@@ -1083,7 +1083,7 @@ a svg {
   color: #47579b;
   text-align: center;
   padding: 12px 20px;
-  font-size: 11px;
+  font-size: 14px;
 }
 .demo-banner a {
   text-decoration: underline;
@@ -1091,7 +1091,7 @@ a svg {
 }
 .notice {
   padding: 13px 15px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.65;
   border-radius: 7px;
   border: 1px solid #dce3ff;
@@ -1127,7 +1127,7 @@ a svg {
   margin-bottom: 10px;
 }
 .empty-state p {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
   margin: 0 auto 22px;
   max-width: 340px;
@@ -1139,7 +1139,7 @@ a svg {
   padding: 5px 8px;
   border-radius: 4px;
   background: #f0f1ec;
-  font-size: 10px;
+  font-size: 14px;
   letter-spacing: 0.02em;
   white-space: nowrap;
   color: #7b8272;
@@ -1172,7 +1172,7 @@ a svg {
   margin-bottom: 20px;
 }
 .field > label {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   display: flex;
   justify-content: space-between;
@@ -1180,7 +1180,7 @@ a svg {
 }
 .field > small,
 .field small {
-  font-size: 10px;
+  font-size: 14px;
   color: var(--muted);
 }
 .field input,
@@ -1193,7 +1193,7 @@ a svg {
   background: white;
   color: var(--ink);
   padding: 12px 13px;
-  font-size: 12px;
+  font-size: 14px;
   outline-offset: 2px;
   min-height: 43px;
 }
@@ -1213,7 +1213,7 @@ a svg {
 }
 .field-error {
   color: #a5482a;
-  font-size: 11px;
+  font-size: 14px;
 }
 .form-actions {
   display: flex;
@@ -1222,7 +1222,7 @@ a svg {
   flex-wrap: wrap;
 }
 .form-label {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   margin-bottom: 12px;
   display: block;
@@ -1252,7 +1252,7 @@ a svg {
 }
 .builder-heading > span {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
   border-left: 1px solid var(--line);
   padding-left: 20px;
 }
@@ -1262,7 +1262,7 @@ a svg {
   gap: 10px;
 }
 .save-state {
-  font-size: 10px;
+  font-size: 14px;
   color: var(--muted);
   margin-right: 8px;
 }
@@ -1284,7 +1284,7 @@ a svg {
   margin: 8px 0 10px;
 }
 .builder-panel .intro {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   margin-bottom: 22px;
 }
@@ -1299,7 +1299,7 @@ a svg {
   border: 0;
   background: none;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
   border-bottom: 2px solid transparent;
 }
 .editor-tabs button.active {
@@ -1319,7 +1319,7 @@ a svg {
   justify-content: center;
   flex-direction: column;
   gap: 9px;
-  font-size: 11px;
+  font-size: 14px;
   color: #7c866f;
   cursor: pointer;
 }
@@ -1335,7 +1335,7 @@ a svg {
   outline: 2px solid var(--blue);
 }
 .upload-area small {
-  font-size: 9px;
+  font-size: 14px;
 }
 .media-grid {
   display: grid;
@@ -1384,7 +1384,7 @@ a svg {
   padding: 10px;
   border-radius: 4px;
   color: #8b937e;
-  font-size: 11px;
+  font-size: 14px;
 }
 .segmented button.active {
   background: white;
@@ -1404,7 +1404,7 @@ a svg {
   align-items: center;
   justify-content: space-between;
   color: #8e9585;
-  font-size: 10px;
+  font-size: 14px;
   margin-bottom: 20px;
 }
 .preview-toolbar > div {
@@ -1440,7 +1440,7 @@ a svg {
   text-align: center;
   background: #fcfcfa;
   border-bottom: 1px solid var(--line);
-  font-size: 9px;
+  font-size: 14px;
   color: #a0a494;
   display: flex;
   gap: 5px;
@@ -1464,24 +1464,24 @@ a svg {
   font-size: 26px;
 }
 .preview-window .product-description {
-  font-size: 11px;
+  font-size: 14px;
   margin: 16px 0;
 }
 .preview-window .product-price {
   font-size: 20px;
 }
 .preview-window .product-buy {
-  font-size: 11px;
+  font-size: 14px;
   padding: 12px;
 }
 .preview-window .delivery-info {
-  font-size: 9px;
+  font-size: 14px;
 }
 .preview-window .product-assurance {
-  font-size: 8px;
+  font-size: 14px;
 }
 .preview-window .shop-wordmark {
-  font-size: 9px;
+  font-size: 14px;
 }
 .preview-window.mobile .product-layout {
   grid-template-columns: 1fr;
@@ -1494,7 +1494,7 @@ a svg {
   text-align: center;
   margin-top: 18px;
   color: #929a85;
-  font-size: 10px;
+  font-size: 14px;
 }
 .builder-mobile-toggle {
   display: none;
@@ -1510,12 +1510,12 @@ a svg {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 12px;
+  font-size: 14px;
   color: #4a5db5;
   margin-bottom: 8px;
 }
 .ai-start p {
-  font-size: 11px;
+  font-size: 14px;
   color: #7c88b2;
   margin-bottom: 12px;
 }
@@ -1527,7 +1527,7 @@ a svg {
   border: 1px solid #dce2fc;
   border-radius: 5px;
   padding: 12px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5;
   margin-bottom: 10px;
 }
@@ -1540,7 +1540,7 @@ a svg {
 .ai-proposal-head {
   background: #edf1ff;
   padding: 12px 15px;
-  font-size: 11px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -1552,7 +1552,7 @@ a svg {
   overflow: auto;
 }
 .ai-proposal p {
-  font-size: 12px;
+  font-size: 14px;
   white-space: pre-wrap;
   line-height: 1.7;
 }
@@ -1560,14 +1560,14 @@ a svg {
   margin: 16px 0;
 }
 .ai-proposal dt {
-  font-size: 9px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--muted);
   margin-top: 14px;
 }
 .ai-proposal dd {
-  font-size: 12px;
+  font-size: 14px;
   margin: 6px 0;
   white-space: pre-line;
 }
@@ -1588,7 +1588,7 @@ a svg {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 12px;
+  font-size: 14px;
   color: #909885;
 }
 .check-list li.done {
@@ -1607,7 +1607,7 @@ a svg {
   margin: 0 0 10px;
 }
 .launch-summary p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   margin-bottom: 20px;
 }
@@ -1619,7 +1619,7 @@ a svg {
   border: 1px solid #dfe8d2;
   border-radius: 6px;
   padding: 10px;
-  font-size: 11px;
+  font-size: 14px;
   margin: 15px 0;
   overflow-wrap: anywhere;
 }
@@ -1651,7 +1651,7 @@ a svg {
   margin-bottom: 12px;
 }
 .dialog p {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
   margin-bottom: 22px;
 }
@@ -1691,7 +1691,7 @@ a svg {
   align-items: center;
   padding: 12px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 14px;
   color: #828b78;
 }
 .sidebar nav a.active {
@@ -1711,7 +1711,7 @@ a svg {
   border-top: 1px solid var(--line);
 }
 .sidebar-bottom > span {
-  font-size: 10px;
+  font-size: 14px;
   display: block;
   color: var(--muted);
   overflow-wrap: anywhere;
@@ -1723,7 +1723,7 @@ a svg {
   display: flex;
   gap: 8px;
   align-items: center;
-  font-size: 11px;
+  font-size: 14px;
   color: #939a89;
 }
 .workspace-content {
@@ -1745,7 +1745,7 @@ a svg {
   margin: 6px 0 10px;
 }
 .workspace-top p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .stats-grid {
@@ -1761,7 +1761,7 @@ a svg {
   border-radius: 8px;
 }
 .stat > span {
-  font-size: 10px;
+  font-size: 14px;
   color: var(--muted);
   display: flex;
   justify-content: space-between;
@@ -1775,7 +1775,7 @@ a svg {
 }
 .stat small {
   display: block;
-  font-size: 9px;
+  font-size: 14px;
   color: #9ba28f;
   margin-top: 7px;
 }
@@ -1797,7 +1797,7 @@ a svg {
   font-size: 22px;
 }
 .panel-heading p {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--muted);
   margin-top: 7px;
 }
@@ -1851,11 +1851,11 @@ a svg {
   justify-content: space-between;
   gap: 10px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
   margin-top: 14px;
 }
 .dashboard-product-info > p {
-  font-size: 9px;
+  font-size: 14px;
   color: #a0a594;
   margin-top: 10px;
 }
@@ -1877,7 +1877,7 @@ a svg {
   margin-bottom: 6px;
 }
 .attention-card p {
-  font-size: 11px;
+  font-size: 14px;
   color: #7f8c70;
 }
 .attention-card > svg {
@@ -1892,12 +1892,12 @@ a svg {
   border-collapse: collapse;
   text-align: left;
   white-space: nowrap;
-  font-size: 12px;
+  font-size: 14px;
 }
 .data-table th {
   font-weight: 500;
   color: #99a08e;
-  font-size: 9px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding: 10px 12px 15px;
@@ -1916,7 +1916,7 @@ a svg {
 .data-table small {
   display: block;
   color: #979e8c;
-  font-size: 9px;
+  font-size: 14px;
   margin-top: 6px;
 }
 .order-detail-grid {
@@ -1929,14 +1929,14 @@ a svg {
   gap: 18px;
 }
 .detail-list dt {
-  font-size: 9px;
+  font-size: 14px;
   color: var(--muted);
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 .detail-list dd {
-  font-size: 13px;
+  font-size: 14px;
   margin: 0;
   white-space: pre-line;
 }
@@ -1950,7 +1950,7 @@ a svg {
   margin-top: 0;
 }
 .settings-grid .panel > p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   margin: 15px 0 22px;
 }
@@ -1974,7 +1974,7 @@ a svg {
   background: white;
   border: 1px solid var(--line);
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1997,26 +1997,26 @@ a svg {
   border-bottom: 1px solid var(--line);
 }
 .assistant-history b {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 500;
   display: block;
   margin-bottom: 6px;
 }
 .assistant-history small {
   color: #929a85;
-  font-size: 9px;
+  font-size: 14px;
 }
 .activity-action {
   display: flex;
   align-items: center;
   gap: 6px;
   color: #7c896e;
-  font-size: 10px;
+  font-size: 14px;
   margin-bottom: 8px;
 }
 .assistant-output {
   white-space: pre-wrap;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.8;
 }
 .workspace-mobile-brand {
@@ -2054,7 +2054,7 @@ a svg {
   color: #27436b;
 }
 .auth-art-overlay p {
-  font-size: 12px;
+  font-size: 14px;
   margin-top: 12px;
   color: #6987ab;
 }
@@ -2067,7 +2067,7 @@ a svg {
   margin: 15px 0;
 }
 .auth-form > p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   margin-bottom: 28px;
 }
@@ -2075,7 +2075,7 @@ a svg {
   margin-bottom: 20px;
 }
 .auth-form .bottom-note {
-  font-size: 11px;
+  font-size: 14px;
   text-align: center;
   margin-top: 20px;
 }
@@ -2096,7 +2096,7 @@ a svg {
   align-items: center;
 }
 .checkout-header > a:last-child {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--muted);
 }
 .checkout-layout {
@@ -2126,7 +2126,7 @@ a svg {
   margin: 15px 0;
 }
 .checkout-summary p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   margin-top: 10px;
 }
@@ -2139,7 +2139,7 @@ a svg {
   display: flex;
   justify-content: space-between;
   gap: 15px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .checkout-totals > div:last-child {
   padding-top: 20px;
@@ -2160,7 +2160,7 @@ a svg {
   margin-top: 10px;
 }
 .checkout-secure {
-  font-size: 9px;
+  font-size: 14px;
   color: #979f89;
   text-align: center;
   margin-top: 15px;
@@ -2194,7 +2194,7 @@ a svg {
   margin-bottom: 15px;
 }
 .receipt-card > p {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
 }
 .receipt-card .detail-list {
@@ -2269,7 +2269,7 @@ a svg {
   margin: 25px 0;
 }
 .form-message {
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.7;
   margin-top: 15px;
   white-space: pre-line;
@@ -2329,7 +2329,7 @@ a svg {
     gap: 17px;
   }
   .hero-ctas .text-link {
-    font-size: 11px;
+    font-size: 14px;
   }
   .hero-ctas .btn {
     padding: 15px;
@@ -2415,10 +2415,10 @@ a svg {
     font-size: 48px;
   }
   .hero-copy > p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .hero-copy .eyebrow {
-    font-size: 8px;
+    font-size: 14px;
   }
   .hero-ctas {
     flex-direction: column;
@@ -2444,7 +2444,7 @@ a svg {
     font-size: 15px;
   }
   .hero-product-details p {
-    font-size: 7px;
+    font-size: 14px;
   }
   .assistant-label {
     right: 8px;
@@ -2452,17 +2452,17 @@ a svg {
     padding: 10px;
   }
   .assistant-label b {
-    font-size: 8px;
+    font-size: 14px;
   }
   .assistant-label > div > span {
-    font-size: 7px;
+    font-size: 14px;
   }
   .top-label {
-    font-size: 6px;
+    font-size: 14px;
     left: 20px;
   }
   .stage-tabs button {
-    font-size: 8px;
+    font-size: 14px;
     padding: 7px;
   }
   .section-intro h2,
@@ -2474,7 +2474,7 @@ a svg {
     gap: 30px;
   }
   .section-intro > p {
-    font-size: 11px;
+    font-size: 14px;
     max-width: 250px;
   }
   .examples-grid {
@@ -2494,40 +2494,40 @@ a svg {
     padding: 17px 8px 30px;
   }
   .upload-tile span {
-    font-size: 9px;
+    font-size: 14px;
   }
   .upload-tile small {
-    font-size: 7px;
+    font-size: 14px;
   }
   .tiny-file {
     left: 20px;
     right: 15px;
-    font-size: 7px;
+    font-size: 14px;
   }
   .edit-card {
     width: 95%;
     padding: 13px;
   }
   .edit-card p {
-    font-size: 10px;
+    font-size: 14px;
   }
   .share-link {
     gap: 5px;
-    font-size: 8px;
+    font-size: 14px;
     padding: 13px 6px;
   }
   .share-link svg {
     width: 13px;
   }
   .share-tags span {
-    font-size: 6px;
+    font-size: 14px;
     padding: 4px;
   }
   .steps-grid h3 {
     font-size: 18px;
   }
   .steps-grid article > p {
-    font-size: 11px;
+    font-size: 14px;
   }
   .assistant-section {
     gap: 30px;
@@ -2536,10 +2536,10 @@ a svg {
     padding: 17px;
   }
   .assistant-copy > p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .assistant-benefits div {
-    font-size: 10px;
+    font-size: 14px;
   }
   .faq-section {
     gap: 35px;
@@ -2569,7 +2569,7 @@ a svg {
     font-size: 34px;
   }
   .product-description {
-    font-size: 12px;
+    font-size: 14px;
   }
   .workspace {
     grid-template-columns: 170px minmax(0, 1fr);
@@ -2676,7 +2676,7 @@ a svg {
     gap: 8px;
   }
   .header-actions .btn {
-    font-size: 10px;
+    font-size: 14px;
     padding: 10px 12px;
     gap: 6px;
   }
@@ -2694,7 +2694,7 @@ a svg {
     padding: 50px 24px 36px;
   }
   .hero-copy .eyebrow {
-    font-size: 8px;
+    font-size: 14px;
   }
   .hero-copy h1 {
     font-size: 54px;
@@ -2702,7 +2702,7 @@ a svg {
     letter-spacing: -0.065em;
   }
   .hero-copy > p {
-    font-size: 13px;
+    font-size: 14px;
     max-width: 315px;
   }
   .desktop-only {
@@ -2715,19 +2715,19 @@ a svg {
     margin-top: 26px;
   }
   .hero-ctas .btn {
-    font-size: 12px;
+    font-size: 14px;
     padding: 15px 17px;
     gap: 10px;
   }
   .hero-ctas .text-link {
-    font-size: 10px;
+    font-size: 14px;
     gap: 6px;
   }
   .hero-ctas .text-link svg {
     width: 14px;
   }
   .hero-note {
-    font-size: 9px;
+    font-size: 14px;
   }
   .hero-bottom-note {
     display: none;
@@ -2748,29 +2748,29 @@ a svg {
     font-size: 17px;
   }
   .hero-product-details p {
-    font-size: 8px;
+    font-size: 14px;
   }
   .top-label {
     left: 23px;
     top: 23px;
-    font-size: 7px;
+    font-size: 14px;
   }
   .assistant-label {
     bottom: 113px;
     right: 15px;
-    font-size: 10px;
+    font-size: 14px;
   }
   .assistant-label b {
-    font-size: 9px;
+    font-size: 14px;
   }
   .assistant-label > div > span {
-    font-size: 8px;
+    font-size: 14px;
   }
   .stage-tabs {
     margin-top: 30px;
   }
   .stage-tabs button {
-    font-size: 9px;
+    font-size: 14px;
     padding: 8px 10px;
   }
   .principle-strip {
@@ -2778,13 +2778,13 @@ a svg {
     justify-content: space-between;
     gap: 13px;
     flex-wrap: wrap;
-    font-size: 7px;
+    font-size: 14px;
   }
   .principle-strip span:nth-child(4) {
     display: none;
   }
   .strip-signature {
-    font-size: 8px;
+    font-size: 14px;
   }
   .wrap {
     padding-left: 24px;
@@ -2805,12 +2805,12 @@ a svg {
     margin-top: 16px;
   }
   .section-intro > p {
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 20px;
     max-width: 300px;
   }
   .eyebrow {
-    font-size: 8px;
+    font-size: 14px;
   }
   .examples-grid {
     grid-template-columns: 1fr;
@@ -2823,20 +2823,20 @@ a svg {
     font-size: 18px;
   }
   .example-card-caption p {
-    font-size: 10px;
+    font-size: 14px;
   }
   .example-card-caption > span {
     font-size: 14px;
   }
   .small-note {
-    font-size: 9px;
+    font-size: 14px;
   }
   .how-section {
     padding: 55px 0;
   }
   .how-section .section-intro > .text-link {
     margin-top: 22px;
-    font-size: 12px;
+    font-size: 14px;
   }
   .steps-grid {
     grid-template-columns: 1fr;
@@ -2852,15 +2852,15 @@ a svg {
     padding: 25px;
   }
   .upload-tile span {
-    font-size: 12px;
+    font-size: 14px;
   }
   .upload-tile small {
-    font-size: 9px;
+    font-size: 14px;
   }
   .tiny-file {
     left: 60px;
     right: 35px;
-    font-size: 10px;
+    font-size: 14px;
     bottom: 25px;
   }
   .tiny-file img {
@@ -2872,20 +2872,20 @@ a svg {
     padding: 22px;
   }
   .edit-card p {
-    font-size: 13px;
+    font-size: 14px;
   }
   .edit-card > span {
-    font-size: 10px;
+    font-size: 14px;
   }
   .edit-card :is(button, a) {
-    font-size: 10px;
+    font-size: 14px;
   }
   .cursor-icon {
     right: 40px;
     bottom: 30px;
   }
   .share-link {
-    font-size: 11px;
+    font-size: 14px;
     gap: 10px;
     padding: 19px 14px;
   }
@@ -2893,7 +2893,7 @@ a svg {
     width: 18px;
   }
   .share-tags span {
-    font-size: 9px;
+    font-size: 14px;
     padding: 7px 10px;
   }
   .steps-grid h3 {
@@ -2901,7 +2901,7 @@ a svg {
     margin: 12px 0 9px;
   }
   .steps-grid article > p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .assistant-section {
     grid-template-columns: 1fr;
@@ -2914,14 +2914,14 @@ a svg {
     padding: 22px;
   }
   .assistant-copy > p {
-    font-size: 13px;
+    font-size: 14px;
     max-width: 330px;
   }
   .assistant-benefits div {
-    font-size: 11px;
+    font-size: 14px;
   }
   .assistant-copy > .btn {
-    font-size: 12px;
+    font-size: 14px;
   }
   .faq-section {
     grid-template-columns: 1fr;
@@ -2930,7 +2930,7 @@ a svg {
     padding-bottom: 55px;
   }
   .faq-list button {
-    font-size: 12px;
+    font-size: 14px;
     padding: 17px 0;
   }
   .final-cta {
@@ -2945,7 +2945,7 @@ a svg {
   .final-cta .btn {
     position: relative;
     z-index: 1;
-    font-size: 12px;
+    font-size: 14px;
   }
   .cta-cube {
     right: -5px;
@@ -2958,7 +2958,7 @@ a svg {
     padding-bottom: 27px;
   }
   .footer-link {
-    font-size: 9px;
+    font-size: 14px;
     gap: 5px;
     max-width: 125px;
   }
@@ -2966,7 +2966,7 @@ a svg {
     width: 14px;
   }
   .footer-bottom {
-    font-size: 8px;
+    font-size: 14px;
     flex-wrap: wrap;
     gap: 18px;
   }
@@ -2984,10 +2984,10 @@ a svg {
     padding-bottom: 20px;
   }
   .shop-wordmark {
-    font-size: 10px;
+    font-size: 14px;
   }
   .shop-heading > span {
-    font-size: 8px;
+    font-size: 14px;
   }
   .product-layout {
     grid-template-columns: 1fr;
@@ -3003,20 +3003,20 @@ a svg {
     font-size: 36px;
   }
   .product-description {
-    font-size: 13px;
+    font-size: 14px;
   }
   .product-price {
     font-size: 26px;
   }
   .product-info .eyebrow {
-    font-size: 9px;
+    font-size: 14px;
   }
   .product-buy {
     padding: 17px;
-    font-size: 13px;
+    font-size: 14px;
   }
   .demo-banner {
-    font-size: 9px;
+    font-size: 14px;
     padding: 10px;
   }
   .builder-header {
@@ -3035,7 +3035,7 @@ a svg {
     gap: 6px;
   }
   .builder-actions > .btn {
-    font-size: 10px;
+    font-size: 14px;
     padding: 10px;
     gap: 5px;
   }
@@ -3082,7 +3082,7 @@ a svg {
     gap: 10px;
     z-index: 25;
     box-shadow: 0 6px 25px #2224;
-    font-size: 12px;
+    font-size: 14px;
     white-space: nowrap;
   }
   .builder-mobile-toggle:hover {
@@ -3098,7 +3098,7 @@ a svg {
     font-size: 31px;
   }
   .preview-window .product-description {
-    font-size: 12px;
+    font-size: 14px;
   }
   .preview-toolbar {
     padding: 0 5px;
@@ -3137,7 +3137,7 @@ a svg {
   }
   .sidebar nav a {
     padding: 7px 13px;
-    font-size: 8px;
+    font-size: 14px;
     gap: 5px;
     flex-direction: column;
   }
@@ -3155,7 +3155,7 @@ a svg {
     margin-bottom: 32px;
   }
   .workspace-mobile-brand > span {
-    font-size: 9px;
+    font-size: 14px;
     color: var(--muted);
   }
   .workspace-top {
@@ -3166,12 +3166,12 @@ a svg {
     font-size: 29px;
   }
   .workspace-top p {
-    font-size: 11px;
+    font-size: 14px;
     max-width: 200px;
   }
   .workspace-top > .btn {
     padding: 11px 13px;
-    font-size: 10px;
+    font-size: 14px;
     gap: 6px;
     white-space: nowrap;
   }
@@ -3187,7 +3187,7 @@ a svg {
     border-radius: 6px;
   }
   .stat > span {
-    font-size: 8px;
+    font-size: 14px;
   }
   .stat > span svg {
     display: none;
@@ -3197,7 +3197,7 @@ a svg {
     margin-top: 12px;
   }
   .stat small {
-    font-size: 7px;
+    font-size: 14px;
     line-height: 1.6;
   }
   .product-list {
@@ -3210,16 +3210,16 @@ a svg {
     font-size: 14px;
   }
   .dashboard-product-info > div {
-    font-size: 9px;
+    font-size: 14px;
     gap: 5px;
   }
   .dashboard-product-info > p {
-    font-size: 8px;
+    font-size: 14px;
   }
   .dashboard-product-photo > .status {
     left: 8px;
     top: 8px;
-    font-size: 8px;
+    font-size: 14px;
     padding: 4px 6px;
   }
   .attention-card {
@@ -3230,11 +3230,11 @@ a svg {
     font-size: 18px;
   }
   .attention-card p {
-    font-size: 10px;
+    font-size: 14px;
   }
   .attention-card > .btn {
     margin-left: 32px;
-    font-size: 10px;
+    font-size: 14px;
   }
   .panel {
     padding: 20px;
@@ -3244,7 +3244,7 @@ a svg {
     font-size: 21px;
   }
   .panel-heading > a {
-    font-size: 10px;
+    font-size: 14px;
   }
   .data-table th,
   .data-table td {
@@ -3252,7 +3252,7 @@ a svg {
     padding-right: 8px;
   }
   .data-table {
-    font-size: 11px;
+    font-size: 14px;
   }
   .auth-layout {
     display: block;
@@ -3321,14 +3321,14 @@ a svg {
   }
   .info-page section p,
   .info-page li {
-    font-size: 12px;
+    font-size: 14px;
   }
   .price-card {
     padding: 25px;
   }
   .assistant-task {
     padding: 12px;
-    font-size: 10px;
+    font-size: 14px;
     gap: 7px;
   }
   .assistant-task svg {
