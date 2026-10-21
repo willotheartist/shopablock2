@@ -1,5 +1,6 @@
 // src/lib/auth.ts
 import "server-only";
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
@@ -88,7 +89,7 @@ export async function deleteSessionByToken(token: string | undefined | null) {
 /**
  * Server components / actions can still read cookies normally.
  */
-export async function getSessionUser() {
+export const getSessionUser = cache(async function getSessionUser() {
   const jar = await cookies();
   const token = jar.get(SESSION_COOKIE)?.value;
   if (!token) return null;
@@ -107,4 +108,4 @@ export async function getSessionUser() {
   }
 
   return session.user;
-}
+});

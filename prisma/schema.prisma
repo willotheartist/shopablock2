@@ -16,6 +16,9 @@ model User {
   blocks       Block[]
   orders       Order[]
   sessions     Session[]
+  assets       Asset[]
+  agentRuns    AgentRun[]
+  displayName  String @default("")
 
   // ✅ KompiPay / Stripe Connect (via KompiPay)
   payoutsStatus            PayoutsStatus @default(not_started)
@@ -49,6 +52,13 @@ model Block {
   status       BlockStatus  @default(draft)
   quantity     Int?
   soldCount    Int          @default(0)
+  reservedCount Int         @default(0)
+  brandName    String       @default("")
+  shippingPrice Int        @default(0)
+  deliveryNote String      @default("")
+  options      Json         @default("[]")
+  digitalAssetId String?
+  archivedAt   DateTime?
   deliveryType DeliveryType @default(physical)
   ownerId      String
   createdAt    DateTime     @default(now())
@@ -83,6 +93,15 @@ model Order {
   email        String
   blockId      String
   sellerId     String
+  checkoutKey  String?     @unique
+  accessTokenHash String?
+  units        Int         @default(1)
+  option       String?
+  shippingAmount Int      @default(0)
+  productTitle String?
+  digitalAssetId String?
+  receiptSentAt DateTime?
+  trackingReference String?
 
   // ✅ KompiPay / Stripe ids (optional, but very useful)
   kompipayPaymentId         String?
@@ -130,4 +149,47 @@ enum PayoutsStatus {
   pending
   active
   restricted
+}
+
+model Asset {
+  id        String @id @default(cuid())
+  ownerId   String
+  owner     User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  pathname  String @unique
+  name      String
+  contentType String
+  size      Int
+  kind      String
+  createdAt DateTime @default(now())
+  @@index([ownerId])
+}
+
+model AgentRun {
+  id        String @id @default(cuid())
+  ownerId   String
+  owner     User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  kind      String
+  status    String @default("running")
+  input     Json
+  output    Json?
+  actions   Json @default("[]")
+  error     String?
+  createdAt DateTime @default(now())
+  completedAt DateTime?
+  @@index([ownerId, createdAt])
+}
+
+model RateLimit {
+  id String @id
+  count Int @default(0)
+  expiresAt DateTime
+  @@index([expiresAt])
+}
+
+model PasswordReset {
+  id String @id @default(cuid())
+  userId String
+  tokenHash String @unique
+  expiresAt DateTime
+  usedAt DateTime?
 }

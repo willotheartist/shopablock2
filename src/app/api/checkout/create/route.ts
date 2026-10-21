@@ -1,65 +1,23 @@
-//·src/app/api/checkout/create/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
-import { createOrder } from "@/lib/orders";
-import { kompipayCreateCheckout } from "@/lib/kompipay";
-
-export const runtime = "nodejs";
-
+import { checkoutSchema, createOrder, preparePayment } from "@/lib/orders";
+import { sameOrigin, failure, AppError } from "@/lib/v2/http";
+import { rateLimit } from "@/lib/v2/rate-limit";
+import { clientIP } from "@/lib/v2/security";
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-
-    const blockId = String(body?.blockId || "").trim();
-    const buyerEmail = String(body?.email || "").trim();
-
-    if (!blockId || !buyerEmail) {
-      return NextResponse.json(
-        { error: "Missing blockId or email" },
-        { status: 400 }
-      );
-    }
-
-    const block = await prisma.block.findUnique({
-      where: { id: blockId },
-      include: { owner: true },
+    sameOrigin(req);
+    await rateLimit(`checkout:${clientIP(req)}`, 12, 900);
+    const p = checkoutSchema.safeParse(await req.json());
+    if (!p.success)
+      throw new AppError("Please check your email and delivery details.");
+    const order = await createOrder(p.data);
+    const payment = await preparePayment(order.id);
+    return NextResponse.json({
+      ...payment,
+      orderId: order.id,
+      receiptUrl: `/receipt/${order.id}?token=${encodeURIComponent(p.data.accessToken)}`,
     });
-
-    if (!block) {
-      return NextResponse.json({ error: "Block not found" }, { status: 404 });
-    }
-
-    // Create ShopaBlock order first (DB record)
-    const order = await createOrder({
-      blockId: block.id,
-      sellerId: block.ownerId,
-      email: buyerEmail,
-    });
-
-    // KompiPay v1: Create Checkout -> Redirect (NO seller onboarding API)
-    const checkout = await kompipayCreateCheckout({
-      title: `ShopaBlock Order`,
-      price: order.amount,
-      currency: order.currency,
-      quantity: 1,
-      metadata: {
-        shopablockOrderId: order.id,
-        blockId: block.id,
-        sellerId: block.ownerId,
-      },
-    });
-
-    // Store KompiPay orderId in existing field
-    await prisma.order.update({
-      where: { id: order.id },
-      data: {
-        kompipayPaymentId: checkout.orderId,
-      },
-    });
-
-    return NextResponse.json({ url: checkout.checkoutUrl, orderId: order.id });
-  } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : "Unknown server error";
-    return NextResponse.json({ error: msg }, { status: 500 });
+  } catch (e) {
+    return failure(e);
   }
 }

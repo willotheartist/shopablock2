@@ -1,24 +1,22 @@
-// src/app/api/auth/sign-out/route.ts
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { deleteSessionByToken, SESSION_COOKIE } from "@/lib/auth";
-
-export const runtime = "nodejs";
-
+import { sameOrigin, failure } from "@/lib/v2/http";
 export async function POST(req: Request) {
-  const jar = await cookies();
-  const token = jar.get(SESSION_COOKIE)?.value;
-
-  await deleteSessionByToken(token);
-
-  const res = NextResponse.redirect(new URL("/", req.url));
-  res.cookies.set(SESSION_COOKIE, "", {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    expires: new Date(0),
-  });
-
-  return res;
+  try {
+    sameOrigin(req);
+    const jar = await cookies();
+    await deleteSessionByToken(jar.get(SESSION_COOKIE)?.value);
+    const r = NextResponse.redirect(new URL("/", req.url), 303);
+    r.cookies.set(SESSION_COOKIE, "", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      expires: new Date(0),
+    });
+    return r;
+  } catch (e) {
+    return failure(e);
+  }
 }
