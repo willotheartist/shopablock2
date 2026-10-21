@@ -10,7 +10,7 @@ Node 24, pnpm. Install with `pnpm install`, set private environment variables, g
 
 - `DATABASE_URL`: Neon PostgreSQL connection string. Preview must use an isolated database branch.
 - `BLOB_READ_WRITE_TOKEN`: private Vercel Blob store.
-- `AI_GATEWAY_MODEL`: verified model ID (currently `anthropic/claude-haiku-4.5`). Vercel OIDC authenticates deployed requests; local use needs `AI_GATEWAY_API_KEY` or a development OIDC token.
+- `AI_GATEWAY_MODEL`: verified model ID (currently `openai/gpt-4.1-mini`). Vercel OIDC authenticates deployed requests; local use needs `AI_GATEWAY_API_KEY` or a development OIDC token.
 - `KOMPIPAY_BASE_URL`: existing KompiPay service.
 - `KOMPIPAY_PLATFORM_API_KEY`: **v2 platform** key. The legacy merchant `KOMPIPAY_API_KEY` is deliberately not used by v2.
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: Stripe publishable key for the same platform and test/live mode. A KompiPay publishable key is not interchangeable.
