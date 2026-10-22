@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AnimatePresence,
+  animate,
   motion,
   useAnimationFrame,
   useMotionValue,
@@ -166,8 +167,176 @@ const demoImage: Variants = {
     transition: { duration: 1, ease },
   },
 };
+const pop: Variants = {
+  hidden: { opacity: 0, scale: 0.85, y: 6 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 260, damping: 18 },
+  },
+};
 
+/** Text that streams in word by word, like it is being written for you. */
+function Stream({
+  text,
+  as: Tag = "p",
+  className,
+  delay = 0,
+  speed = 0.045,
+}: {
+  text: string;
+  as?: "p" | "h3" | "span";
+  className?: string;
+  delay?: number;
+  speed?: number;
+}) {
+  const MotionTag = motion[Tag];
+  return (
+    <MotionTag
+      className={className}
+      initial="hidden"
+      animate="show"
+      transition={{ staggerChildren: speed, delayChildren: delay }}
+    >
+      {text.split(" ").map((w, i) => (
+        <motion.span
+          key={i}
+          style={{ display: "inline-block", whiteSpace: "pre" }}
+          variants={{
+            hidden: { opacity: 0, y: 5, filter: "blur(3px)" },
+            show: {
+              opacity: 1,
+              y: 0,
+              filter: "blur(0px)",
+              transition: { duration: 0.3 },
+            },
+          }}
+        >
+          {w + (i < text.split(" ").length - 1 ? " " : "")}
+        </motion.span>
+      ))}
+    </MotionTag>
+  );
+}
+
+/** A number that counts up to its value. */
+function Counter({
+  to,
+  pad = 2,
+  delay = 0,
+  prefix = "",
+}: {
+  to: number;
+  pad?: number;
+  delay?: number;
+  prefix?: string;
+}) {
+  const reduce = useReducedMotion();
+  const mv = useMotionValue(reduce ? to : 0);
+  const text = useTransform(
+    mv,
+    (v) => prefix + String(Math.round(v)).padStart(pad, "0"),
+  );
+  useEffect(() => {
+    if (reduce) {
+      mv.set(to);
+      return;
+    }
+    const c = animate(mv, to, { duration: 1.1, ease, delay });
+    return () => c.stop();
+  }, [to, delay, mv, reduce]);
+  return <motion.span>{text}</motion.span>;
+}
+
+/** Steps through phases on a timeline (ms after mount). Reduced motion jumps to the end. */
+function usePhases(steps: readonly number[]) {
+  const reduce = useReducedMotion();
+  const [phase, setPhase] = useState(reduce ? steps.length : 0);
+  const key = steps.join(",");
+  useEffect(() => {
+    if (reduce) return;
+    const timers = key
+      .split(",")
+      .map((ms, i) => window.setTimeout(() => setPhase(i + 1), Number(ms)));
+    return () => timers.forEach(clearTimeout);
+  }, [key, reduce]);
+  return phase;
+}
+
+/** A little cursor that moves around the illustration and clicks things. */
+function Cursor({
+  x,
+  y,
+  visible,
+  pressed,
+}: {
+  x: string;
+  y: string;
+  visible: boolean;
+  pressed?: boolean;
+}) {
+  return (
+    <motion.div
+      className="sb-demo-cursor"
+      aria-hidden="true"
+      initial={false}
+      animate={{
+        left: x,
+        top: y,
+        opacity: visible ? 1 : 0,
+        scale: pressed ? 0.82 : 1,
+      }}
+      transition={{
+        left: { duration: 0.9, ease },
+        top: { duration: 0.9, ease },
+        opacity: { duration: 0.3 },
+        scale: { type: "spring", stiffness: 500, damping: 20 },
+      }}
+    >
+      <svg viewBox="0 0 20 22" width="20" height="22">
+        <path
+          d="M2 2l5.5 16 2.6-6.4L16.5 9z"
+          fill="#f5f5f5"
+          stroke="#111"
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <AnimatePresence>
+        {pressed && (
+          <motion.span
+            className="sb-cursor-ring"
+            initial={{ scale: 0.4, opacity: 0.8 }}
+            animate={{ scale: 2.4, opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          />
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
+function Typing() {
+  return (
+    <motion.div
+      className="sb-typing"
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -4, transition: { duration: 0.15 } }}
+    >
+      <i />
+      <i />
+      <i />
+    </motion.div>
+  );
+}
+
+/* 01 — the page assembles itself, saves, and takes its first click. */
 function ShopDemo() {
+  const phase = usePhases([1500, 2300, 3100, 5200]);
+  const added = phase >= 3 && phase < 4;
   return (
     <motion.div className="sb-shop-demo" variants={demoParent}>
       <motion.div className="sb-demo-browser" variants={demoChild}>
@@ -179,7 +348,24 @@ function ShopDemo() {
         <span>
           <Globe2 size={14} /> shopablock.co/your-thing
         </span>
-        <Link2 size={16} />
+        <AnimatePresence mode="wait" initial={false}>
+          {phase >= 1 ? (
+            <motion.span
+              key="saved"
+              className="sb-live-pill"
+              variants={pop}
+              initial="hidden"
+              animate="show"
+              exit={{ opacity: 0 }}
+            >
+              <i /> Live
+            </motion.span>
+          ) : (
+            <motion.span key="link" exit={{ opacity: 0 }}>
+              <Link2 size={16} />
+            </motion.span>
+          )}
+        </AnimatePresence>
       </motion.div>
       <motion.div className="sb-demo-brand" variants={demoChild}>
         <span>FORM STUDIO</span>
@@ -195,13 +381,40 @@ function ShopDemo() {
           <motion.span className="sb-label" variants={demoChild}>
             THE EVERYDAY COLLECTION
           </motion.span>
-          <motion.h3 variants={demoChild}>The everyday mug.</motion.h3>
-          <motion.p variants={demoChild}>
-            A ceramic companion for your daily ritual.
-          </motion.p>
-          <motion.strong variants={demoChild}>£24.00</motion.strong>
-          <motion.div className="sb-demo-purchase" variants={demoChild}>
-            Make it yours <ArrowUpRight size={18} />
+          <Stream as="h3" text="The everyday mug." delay={0.35} speed={0.12} />
+          <Stream
+            text="A ceramic companion for your daily ritual."
+            delay={0.75}
+          />
+          <motion.strong variants={demoChild}>
+            <Counter to={24} prefix="£" delay={0.9} />
+            .00
+          </motion.strong>
+          <motion.div
+            className={added ? "sb-demo-purchase added" : "sb-demo-purchase"}
+            variants={demoChild}
+            animate={{ scale: phase === 3 ? [1, 0.97, 1] : 1 }}
+            transition={{ duration: 0.35 }}
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={added ? "added" : "buy"}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+                style={{ display: "flex", alignItems: "center", gap: 8 }}
+              >
+                {added ? (
+                  <>
+                    <Check size={16} /> Added to your bag
+                  </>
+                ) : (
+                  "Make it yours"
+                )}
+              </motion.span>
+            </AnimatePresence>
+            <ArrowUpRight size={18} />
           </motion.div>
           <motion.span className="sb-demo-shipping" variants={demoChild}>
             <Package size={16} /> Made for the everyday.
@@ -211,15 +424,35 @@ function ShopDemo() {
       <motion.div className="sb-demo-caption" variants={demoChild}>
         Illustrative shop preview
       </motion.div>
+      <Cursor
+        x={phase >= 2 ? "72%" : "58%"}
+        y={phase >= 2 ? "66%" : "40%"}
+        visible={phase >= 2 && phase < 4}
+        pressed={phase === 3}
+      />
     </motion.div>
   );
 }
+
+/* 02 — you ask, it thinks, it writes, you approve. */
 function SuggestionDemo() {
+  const phase = usePhases([500, 1300, 3200, 4100, 4700]);
+  const applied = phase >= 5;
   return (
     <motion.div className="sb-suggestion-demo" variants={demoParent}>
       <motion.div className="sb-panel-heading" variants={demoChild}>
         <span className="sb-agent-symbol">
-          <Sparkles size={22} />
+          <motion.span
+            style={{ display: "flex" }}
+            animate={
+              phase === 1
+                ? { rotate: [0, 18, -12, 0], scale: [1, 1.12, 1] }
+                : {}
+            }
+            transition={{ duration: 0.9, repeat: phase === 1 ? Infinity : 0 }}
+          >
+            <Sparkles size={22} />
+          </motion.span>
         </span>
         <div>
           <strong>ShopaBlock assistant</strong>
@@ -229,35 +462,100 @@ function SuggestionDemo() {
       <motion.div className="sb-demo-message" variants={demoChild}>
         I’m launching a ceramic mug. Help me find the words.
       </motion.div>
-      <motion.div
-        className="sb-demo-proposal"
-        variants={{
-          hidden: {},
-          show: { transition: { staggerChildren: 0.09, delayChildren: 0.45 } },
-        }}
-      >
-        <motion.div className="sb-label" variants={demoChild}>
-          <CheckCheck size={17} /> SUGGESTION READY
-        </motion.div>
-        <motion.h3 variants={demoChild}>Meet your new daily ritual.</motion.h3>
-        <motion.p variants={demoChild}>
-          A ceramic mug for slow mornings, strong coffee and a moment to
-          yourself.
-        </motion.p>
-        <motion.div className="sb-demo-question" variants={demoChild}>
-          What’s the capacity, finish and delivery time?
-        </motion.div>
-      </motion.div>
+      <div className="sb-demo-reply">
+        <AnimatePresence>{phase === 1 && <Typing key="t" />}</AnimatePresence>
+        {phase >= 2 && (
+          <div className="sb-demo-proposal">
+            <motion.div
+              className="sb-label"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <CheckCheck size={17} /> SUGGESTION READY
+            </motion.div>
+            <Stream as="h3" text="Meet your new daily ritual." speed={0.09} />
+            <Stream
+              text="A ceramic mug for slow mornings, strong coffee and a moment to yourself."
+              delay={0.5}
+              speed={0.05}
+            />
+            <motion.div
+              className="sb-demo-question"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.3, duration: 0.5 }}
+            >
+              What’s the capacity, finish and delivery time?
+            </motion.div>
+          </div>
+        )}
+        <AnimatePresence>
+          {phase >= 3 && (
+            <motion.div
+              className="sb-demo-actions"
+              initial="hidden"
+              animate="show"
+              exit={{ opacity: 0 }}
+              transition={{ staggerChildren: 0.08 }}
+            >
+              <motion.span
+                variants={pop}
+                className={
+                  applied ? "sb-demo-btn primary done" : "sb-demo-btn primary"
+                }
+                animate={{ scale: phase === 4 ? [1, 0.96, 1] : 1 }}
+              >
+                {applied ? (
+                  <>
+                    <Check size={15} /> Applied
+                  </>
+                ) : (
+                  "Apply to my page"
+                )}
+              </motion.span>
+              <motion.span variants={pop} className="sb-demo-btn">
+                Edit first
+              </motion.span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
       <motion.div className="sb-review-note" variants={demoChild}>
         <span>
-          <Check size={17} /> Review before applying
+          <Check size={17} />
+          {applied
+            ? "Description updated. Nothing went live."
+            : "Review before applying"}
         </span>
         <span>Example</span>
       </motion.div>
+      <Cursor
+        x={phase >= 4 ? "13%" : "40%"}
+        y={phase >= 4 ? "77%" : "60%"}
+        visible={phase >= 4 && phase < 6}
+        pressed={phase === 4}
+      />
     </motion.div>
   );
 }
+
+/* 03 — the numbers come in, then a new order lands while you watch. */
+const baseOrders = [
+  { name: "The everyday mug", tag: "Ready to pack", id: "0043", sent: false },
+  { name: "The everyday mug", tag: "Ready to pack", id: "0042", sent: false },
+  { name: "Off the grid", tag: "Sent", id: "0041", sent: true },
+];
+const week = [0.35, 0.5, 0.3, 0.7, 0.55, 0.85, 1];
 function OrdersDemo() {
+  const phase = usePhases([1700, 2500, 4600]);
+  const landed = phase >= 2;
+  // A new order arrives at the top; the oldest slips off the bottom.
+  const orders = landed
+    ? [
+        { name: "Off the grid", tag: "New", id: "0044", sent: false },
+        ...baseOrders.slice(0, 2),
+      ]
+    : baseOrders;
   return (
     <motion.div className="sb-orders-demo" variants={demoParent}>
       <motion.div className="sb-panel-heading" variants={demoChild}>
@@ -273,33 +571,112 @@ function OrdersDemo() {
       <motion.div className="sb-order-summary" variants={demoChild}>
         <div>
           <span>Paid orders</span>
-          <strong>03</strong>
+          <strong>
+            <Counter to={landed ? 4 : 3} delay={landed ? 0 : 0.3} />
+          </strong>
         </div>
         <div>
           <span>To fulfil</span>
-          <strong>02</strong>
+          <strong>
+            <Counter to={landed ? 3 : 2} delay={landed ? 0 : 0.45} />
+          </strong>
+        </div>
+        <div className="sb-order-week">
+          <span>
+            This week <b>£{landed ? 84 : 66}</b>
+          </span>
+          <motion.div
+            className="sb-mini-chart"
+            initial="hidden"
+            animate="show"
+            transition={{ staggerChildren: 0.07, delayChildren: 0.5 }}
+          >
+            {week.map((h, i) => (
+              <motion.i
+                key={i}
+                style={{ height: `${h * 100}%` }}
+                variants={{
+                  hidden: { scaleY: 0 },
+                  show: { scaleY: 1, transition: { duration: 0.7, ease } },
+                }}
+                animate={landed && i === 6 ? { opacity: [0.6, 1] } : undefined}
+              />
+            ))}
+          </motion.div>
         </div>
       </motion.div>
-      {[
-        { name: "The everyday mug", tag: "Ready to pack", id: "0043" },
-        { name: "The everyday mug", tag: "Ready to pack", id: "0042" },
-        { name: "Off the grid", tag: "Sent", id: "0041" },
-      ].map((o, i) => (
-        <motion.div className="sb-order-row" key={o.id} variants={demoChild}>
-          <span className="sb-order-icon">
-            {i === 2 ? <Check size={21} /> : <Package size={21} />}
-          </span>
-          <div>
-            <strong>{o.name}</strong>
-            <span>Order #{o.id}</span>
-          </div>
-          <span className="sb-order-status">{o.tag}</span>
-        </motion.div>
-      ))}
+      <div className="sb-order-list">
+        <AnimatePresence initial={false}>
+          {orders.map((o, i) => (
+            <motion.div
+              className="sb-order-row"
+              key={o.id}
+              layout
+              variants={demoChild}
+              initial={
+                o.id === "0044"
+                  ? { opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }
+                  : undefined
+              }
+              animate={
+                o.id === "0044"
+                  ? {
+                      opacity: 1,
+                      height: "auto",
+                      paddingTop: 19,
+                      paddingBottom: 19,
+                    }
+                  : undefined
+              }
+              exit={{
+                opacity: 0,
+                height: 0,
+                paddingTop: 0,
+                paddingBottom: 0,
+                borderBottomWidth: 0,
+              }}
+              transition={{ duration: 0.55, ease }}
+            >
+              <span className="sb-order-icon">
+                {o.sent ? <Check size={21} /> : <Package size={21} />}
+              </span>
+              <div>
+                <strong>{o.name}</strong>
+                <span>Order #{o.id}</span>
+              </div>
+              <span className="sb-order-status">
+                <i
+                  className={o.sent ? "" : i === 0 && landed ? "new" : "live"}
+                />
+                {o.tag}
+              </span>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
       <motion.div className="sb-order-foot" variants={demoChild}>
         <span>Everything in its place.</span>
         <ArrowUpRight size={20} />
       </motion.div>
+      <AnimatePresence>
+        {phase >= 1 && phase < 3 && (
+          <motion.div
+            className="sb-toast"
+            initial={{ opacity: 0, y: -14, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, transition: { duration: 0.25 } }}
+            transition={{ type: "spring", stiffness: 300, damping: 22 }}
+          >
+            <span className="sb-toast-icon">
+              <Check size={14} />
+            </span>
+            <span>
+              <strong>New order</strong>
+              <em>Off the grid · £18</em>
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
